@@ -1,0 +1,995 @@
+{
+  "corpus_name": "Indonesian Marketplace Scam & Hard-Negative Chat Benchmark (ID-ScamChat-72)",
+  "version": "1.0.0",
+  "language": "id-ID",
+  "total_samples": 72,
+  "categories": [
+    "benign_negotiation",
+    "phishing_link",
+    "fake_courier_apk",
+    "qris_refund_trap",
+    "off_platform_escrow_bypass",
+    "fake_cs_urgency"
+  ],
+  "samples": [
+    {
+      "sample_id": "BENIGN_01",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Standard price negotiation and stock check with Indonesian slang",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Halo gan, mechanical keyboard varian brown switch masih ready stok?", "timestamp": "09:12"},
+        {"sender": "seller", "text": "Ready kak, sisa 3 unit garansi resmi distributor 1 tahun.", "timestamp": "09:13"},
+        {"sender": "buyer", "text": "Bisa nego tipis gak gan kalau ambil 2 pcs? Sekalian pakai voucher gratis ongkir di aplikasi.", "timestamp": "09:14"},
+        {"sender": "seller", "text": "Boleh kak, pakai fitur Tawar Harga di keranjang aplikasi aja ya nanti saya acc.", "timestamp": "09:15"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_02",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Standard apparel sizing and COD inquiry",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Sis, batik slimfit ukuran XL lingkar dadanya berapa cm ya? Bisa COD kan?", "timestamp": "10:02"},
+        {"sender": "seller", "text": "LD 112 cm kak, bahan katun primisima adem. Bisa COD lewat kurir reguler di aplikasi kak.", "timestamp": "10:04"},
+        {"sender": "buyer", "text": "Oke mantap sis, aku checkout sekarang ya.", "timestamp": "10:05"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_03",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Standard electronics authenticity and warranty check",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak, charger Anker 65W GaN ini ori 100% segel resmi kan? Takut dapat KW.", "timestamp": "11:20"},
+        {"sender": "seller", "text": "Dijamin ori 100% kak, ada barcode serial resmi di box dan garansi 18 bulan.", "timestamp": "11:22"},
+        {"sender": "buyer", "text": "Sip kak, udah aku bayar lewat fitur checkout resmi ya.", "timestamp": "11:24"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_04",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Skincare expiration date and bubble wrap request",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Min, serum niacinamide ini exp date kapan? Tolong packing bubble wrap tebal ya.", "timestamp": "12:10"},
+        {"sender": "seller", "text": "Exp masih panjang kak sampai Desember 2028, sudah free bubble wrap berlapis dan kardus.", "timestamp": "12:11"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_05",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Same-day instant courier schedule coordination inside app",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak kalau pilih pengiriman GoSend Instant sekarang bisa langsung request pickup?", "timestamp": "13:00"},
+        {"sender": "seller", "text": "Bisa kak, begitu notifikasi pembayaran terverifikasi di sistem toko langsung kami klik pickup.", "timestamp": "13:02"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_06",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Pre-order coffee beans grind size customization",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Gan, kopi Arabika Gayo 500gr tolong digiling medium buat V60 ya, udah kutulis di catatan.", "timestamp": "14:05"},
+        {"sender": "seller", "text": "Siap gan, baru selesai sangrai pagi ini, sore langsung diserahkan ke gerai ekspedisi.", "timestamp": "14:08"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_07",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Buyer refuses off-platform chat and keeps conversation in official app",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak detail spek laptopnya dijelasin via chat di aplikasi saja ya, jangan di luar aplikasi biar aman.", "timestamp": "15:10"},
+        {"sender": "seller", "text": "Siap kak, semua transaksi dan tanya jawab resmi lewat chat aplikasi toko kami saja.", "timestamp": "15:12"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_08",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Bulk order discount voucher inside official store",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Min, mau beli 10 dus kertas A4 buat kantor, ada voucher grosir di halaman toko?", "timestamp": "15:40"},
+        {"sender": "seller", "text": "Ada kak, langsung klaim voucher toko Rp25.000 di banner etalase kami sebelum checkout.", "timestamp": "15:42"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_09",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Shoe size exchange inquiry before shipment",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak pesanan saya barusan salah pilih size 41, bisa diganti size 42 sebelum dipacking?", "timestamp": "16:00"},
+        {"sender": "seller", "text": "Bisa kak, kebetulan belum dicetak label pengirimannya, kami kirim size 42 ya.", "timestamp": "16:03"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_10",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Official store flash sale schedule question",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Min, nanti malam jam 00.00 produk TWS ini ikut promo kembar 11.11 di aplikasi gak?", "timestamp": "18:30"},
+        {"sender": "seller", "text": "Ikut kak, pantengin halaman resmi toko kami jam 00.00 WIB ya kuota terbatas.", "timestamp": "18:32"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_11",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate JNT tracking number (cek resi + resi jnt)",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak tolong bantu cek resi pesanan saya kok statusnya masih di gudang sortir Jakarta?", "timestamp": "10:15"},
+        {"sender": "seller", "text": "Ini nomor resi JNT: JP8849201193 kak, barusan saya cek di halaman lacak aplikasi sudah jalan ke Bandung.", "timestamp": "10:18"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_12",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Buyer asks for photo of package (foto paket) in chat",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Gan, boleh minta foto paket dan segel dusnya di ruang chat ini sebelum diserahkan ke kurir?", "timestamp": "11:05"},
+        {"sender": "seller", "text": "Boleh gan, ini foto paket sudah ditempel resi JNE: CGK1029384756 di kardusnya ya.", "timestamp": "11:09"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_13",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate refund via official Pusat Resolusi in-app button",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak lampu mejanya pecah satu waktu dibuka, saya sudah rekam video unboxing untuk komplain dan pengembalian dana.", "timestamp": "13:20"},
+        {"sender": "seller", "text": "Mohon maaf kak, silakan klik tombol komplain resmi dan ajukan pengembalian di aplikasi lewat Pusat Resolusi agar saldo otomatis kembali.", "timestamp": "13:25"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_14",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "dev",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate QRIS checkout question inside official marketplace payment page",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Min, kalau saya bayar pakai metode QRIS di halaman checkout aplikasi apakah langsung terverifikasi otomatis?", "timestamp": "14:10"},
+        {"sender": "seller", "text": "Betul kak, pembayaran QRIS resmi di halaman checkout langsung otomatis terverifikasi oleh sistem marketplace tanpa perlu kirim bukti manual.", "timestamp": "14:12"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_15",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate JNE & SiCepat resi tracking inquiry",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Sis mau cek resi JNE dan foto paket pesanan kemarin dong, takut nyasar.", "timestamp": "15:00"},
+        {"sender": "seller", "text": "Halo sis, resi JNE: TGR9988112233 sudah diinput otomatis di status pengiriman aplikasi ya, foto paket juga sudah kami lampirkan di galeri chat.", "timestamp": "15:04"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_16",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate partial refund / return instruction via Pusat Resolusi",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak kaos yang dikirim kurang 1 pcs, gimana prosedur refund atau pengembalian dana untuk 1 kaosnya?", "timestamp": "16:15"},
+        {"sender": "seller", "text": "Kakak langsung pilih menu Ajukan Pengembalian di aplikasi pada Pusat Resolusi ya, nanti kami setujui refund parsial ke saldo kakak.", "timestamp": "16:18"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_17",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate SPX & JNT courier tracking update",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Min tolong cek resi JNT saya dong kok belum bergerak sejak pagi.", "timestamp": "17:02"},
+        {"sender": "seller", "text": "Sudah jalan kak, nomor resi JNT: JD0192837465 baru saja di-scan kurir manifest sore ini.", "timestamp": "17:06"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_18",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "val",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Official customer service mention in benign context",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak voucher cashback saya belum masuk, apakah saya tanya ke customer service di menu bantuan aplikasi?", "timestamp": "18:00"},
+        {"sender": "seller", "text": "Iya kak, untuk kendala kupon promo bisa hubungi Pusat Bantuan resmi di menu Pengaturan aplikasi ya.", "timestamp": "18:04"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_19",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate resi JNT & foto paket verification",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Gan makasih sudah kirim foto paket di chat, saya bantu cek resi JNT: JP5544332211 sudah masuk di sistem pelacakan.", "timestamp": "19:10"},
+        {"sender": "seller", "text": "Sama-sama gan, semoga paket cepat mendarat dengan aman.", "timestamp": "19:12"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_20",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Official auto-refund on out-of-stock item",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "seller", "text": "Kak mohon maaf warna maroon habis, silakan batalkan pesanan atau ajukan pengembalian di aplikasi lewat Pusat Resolusi agar refund otomatis tanpa biaya.", "timestamp": "19:45"},
+        {"sender": "buyer", "text": "Oke kak saya klik batalkan pesanan lewat menu resmi aplikasi sekarang ya.", "timestamp": "19:47"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_21",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate SeaBank virtual account / QRIS checkout confirmation",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "buyer", "text": "Kak saya sudah bayar tagihan pesanan lewat QRIS resmi di halaman checkout dan SeaBank Virtual Account di aplikasi, mohon diproses ya.", "timestamp": "20:05"},
+        {"sender": "seller", "text": "Notifikasi pembayaran sudah masuk di dashboard pesanan toko kami kak, besok pagi langsung dikirim.", "timestamp": "20:08"}
+      ]
+    },
+    {
+      "sample_id": "BENIGN_HN_22",
+      "category": "benign_negotiation",
+      "category_label": "Benign Buyer/Seller Negotiation",
+      "is_scam": false,
+      "split": "sealed_test",
+      "difficulty": "hard_negative",
+      "notes": "Hard negative: Legitimate AnterAja/SiCepat resi number & unboxing reminder",
+      "expected_red_flags": [],
+      "turns": [
+        {"sender": "seller", "text": "Halo kak, ini foto paket sebelum dikirim dengan resi SiCepat: 001928374655. Jangan lupa video unboxing jika ingin komplain lewat Pusat Resolusi ya.", "timestamp": "20:30"},
+        {"sender": "buyer", "text": "Siap kak terima kasih infonya.", "timestamp": "20:32"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_01",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Classic HTTP phishing link asking for login and password",
+      "expected_red_flags": ["http://shopee-seller-center.xyz/login", "password"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo seller, pesanan pembeli tertahan karena alamat toko belum sinkron.", "timestamp": "09:00"},
+        {"sender": "impersonator", "text": "Silakan login dan masukkan password toko Anda di http://shopee-seller-center.xyz/login sekarang juga.", "timestamp": "09:01"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_02",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Explicit .top phishing URL with login keyword",
+      "expected_red_flags": ["http://tokopedia-bantuan-resmi.top/login", "login"],
+      "turns": [
+        {"sender": "impersonator", "text": "Pembayaran saya gagal masuk ke dompet toko kakak, coba cek di link http://tokopedia-bantuan-resmi.top/login untuk konfirmasi login.", "timestamp": "09:30"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_03",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Typosquatted sh0pee domain + SeaBank PIN/OTP harvesting without http://",
+      "expected_red_flags": ["sh0pee-pay-claim.xyz", "pin seabank", "otp"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak saya sudah bayar tapi sistem minta aktivasi penerima di sh0pee-pay-claim.xyz/pencairan.", "timestamp": "10:10"},
+        {"sender": "impersonator", "text": "Tolong masukkan PIN SeaBank dan sebutkan kode OTP 6 digit yang muncul di SMS ya kak.", "timestamp": "10:11"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_04",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Typosquatted t0kopedia-verifikasi.site asking for OTP code",
+      "expected_red_flags": ["t0kopedia-verifikasi.site", "kode otp"],
+      "turns": [
+        {"sender": "impersonator", "text": "Gan, pesanan saya senilai Rp4.500.000 tertahan proteksi penjual, buka t0kopedia-verifikasi.site/klaim lalu kirimkan kode OTP ke sini.", "timestamp": "11:00"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_05",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Shortlink s.id phishing lure asking for ShopeePay PIN and OTP",
+      "expected_red_flags": ["s.id/verifikasi-pencairan-toko", "pin shopeepay", "kode otp"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak untuk mencairkan dana pesanan saya silakan klik formulir s.id/verifikasi-pencairan-toko.", "timestamp": "11:45"},
+        {"sender": "impersonator", "text": "Di halaman itu wajib masukkan PIN ShopeePay dan kirimkan kode OTP verifikasi ya.", "timestamp": "11:46"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_06",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "SeaBank lookalike domain seab4nk-bantuan.online harvesting OTP",
+      "expected_red_flags": ["seab4nk-bantuan.online", "kode otp"],
+      "turns": [
+        {"sender": "impersonator", "text": "Pencairan otomatis ke rekening SeaBank kakak tertolak, segera sinkronisasi di seab4nk-bantuan.online dan masukkan kode OTP SMS.", "timestamp": "12:30"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_07",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Explicit HTTP login credential phishing",
+      "expected_red_flags": ["http://seabank-verify-id.xyz/login", "password"],
+      "turns": [
+        {"sender": "impersonator", "text": "Mohon verifikasi login akun pembayaran toko Anda pada http://seabank-verify-id.xyz/login dengan mengisi password dan PIN.", "timestamp": "13:15"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_08",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "bit.ly shortlink + OTP & ShopeePay PIN capture",
+      "expected_red_flags": ["bit.ly/klaim-saldo-penjual", "kode otp", "pin shopeepay"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo kak, dana pesanan borongan saya Rp8.200.000 harus diklaim manual lewat bit.ly/klaim-saldo-penjual.", "timestamp": "14:20"},
+        {"sender": "impersonator", "text": "Nanti setelah buka linknya, minta kode OTP dan masukkan PIN ShopeePay kakak agar langsung cair.", "timestamp": "14:21"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_09",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Lookalike sh0pee-bantuan.click domain harvesting credentials",
+      "expected_red_flags": ["sh0pee-bantuan.click", "kode otp"],
+      "turns": [
+        {"sender": "impersonator", "text": "Akun toko kakak belum aktif fitur pembayarannya, buka sh0pee-bantuan.click/aktivasi dan sebutkan kode OTP yang masuk ke HP kakak.", "timestamp": "15:05"}
+      ]
+    },
+    {
+      "sample_id": "PHISH_10",
+      "category": "phishing_link",
+      "category_label": "Phishing Link / Fake Shopee-Tokopedia-SeaBank Login",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Explicit HTTP login phishing domain",
+      "expected_red_flags": ["http://lazada-seller-auth.top/login", "password"],
+      "turns": [
+        {"sender": "impersonator", "text": "Silakan login ulang di http://lazada-seller-auth.top/login dan ketik password akun penjual untuk menerima pesanan ini.", "timestamp": "16:10"}
+      ]
+    },
+    {
+      "sample_id": "APK_01",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Classic Lihat-Foto-Paket.apk courier malware lure",
+      "expected_red_flags": ["Lihat-Foto-Paket.apk", "sumber tidak dikenal"],
+      "turns": [
+        {"sender": "impersonator", "text": "Permisi kak saya kurir J&T, alamat rumah kakak luntur terkena hujan.", "timestamp": "09:10"},
+        {"sender": "impersonator", "text": "Tolong buka file Lihat-Foto-Paket.apk ini untuk cek resi dan pastikan izinkan instal sumber tidak dikenal di HP kakak.", "timestamp": "09:11"}
+      ]
+    },
+    {
+      "sample_id": "APK_02",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Cek_Resi_JNT.apk attachment",
+      "expected_red_flags": ["Cek_Resi_JNT.apk", "akses sms"],
+      "turns": [
+        {"sender": "impersonator", "text": "Gan barang retur sudah saya kirim balik, silakan unduh file Cek_Resi_JNT.apk dan berikan izin akses SMS agar bukti foto paket tampil.", "timestamp": "10:00"}
+      ]
+    },
+    {
+      "sample_id": "APK_03",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Disguised courier app install without literal .apk extension (missed by Gen 0)",
+      "expected_red_flags": ["instal aplikasi kurir", "sumber tidak dikenal", "akses sms"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak paket retur tertahan di gudang ekspedisi, kakak wajib instal aplikasi kurir digital yang saya kirim ini.", "timestamp": "10:40"},
+        {"sender": "impersonator", "text": "Waktu muncul peringatan Play Protect klik tetap instal dari sumber tidak dikenal dan aktifkan izin akses SMS ya.", "timestamp": "10:41"}
+      ]
+    },
+    {
+      "sample_id": "APK_04",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Surat-Retur-SPX.apk malware file",
+      "expected_red_flags": ["Surat-Retur-SPX.apk"],
+      "turns": [
+        {"sender": "impersonator", "text": "Ini bukti resi pengembalian barang saya lampirkan dalam file Surat-Retur-SPX.apk, tolong diinstal di HP Android kakak.", "timestamp": "11:15"}
+      ]
+    },
+    {
+      "sample_id": "APK_05",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Spaced .a p k extension and sideload instruction",
+      "expected_red_flags": ["Bukti_Resi_Kurir.a p k", "sumber tidak dikenal"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak saya kirim file resi Bukti_Resi_Kurir.a p k ya, hapus spasinya lalu izinkan instal sumber tidak dikenal supaya foto barangnya kebuka.", "timestamp": "12:00"}
+      ]
+    },
+    {
+      "sample_id": "APK_06",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Detail_Pesanan_Borongan.apk malware disguised as order list",
+      "expected_red_flags": ["Detail_Pesanan_Borongan.apk"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo gan saya mau pesan 50 pcs seragam, daftar ukuran lengkap ada di file Detail_Pesanan_Borongan.apk ini, silakan instal dulu.", "timestamp": "13:05"}
+      ]
+    },
+    {
+      "sample_id": "APK_07",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Disguised ekspedisi apk inside zip/rar requiring SMS permission",
+      "expected_red_flags": ["file resi_paket.zip", "instal aplikasi ekspedisi", "akses sms"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak buka file resi_paket.zip lalu instal aplikasi ekspedisi di dalamnya dan setujui akses SMS untuk melihat posisi kurir.", "timestamp": "14:15"}
+      ]
+    },
+    {
+      "sample_id": "APK_08",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Foto-Kerusakan-Barang.apk refund malware",
+      "expected_red_flags": ["Foto-Kerusakan-Barang.apk", "sumber tidak dikenal"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak barang yang kakak kirim cacat, bukti fotonya ada di Foto-Kerusakan-Barang.apk, buka di HP Android dan aktifkan sumber tidak dikenal.", "timestamp": "15:20"}
+      ]
+    },
+    {
+      "sample_id": "APK_09",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Sideload courier tracking app asking to disable Play Protect",
+      "expected_red_flags": ["instal aplikasi resi", "matikan play protect", "akses sms"],
+      "turns": [
+        {"sender": "impersonator", "text": "Supaya resi pengiriman kargo muncul, tolong instal aplikasi resi resmi ini, matikan Play Protect dan beri izin akses SMS.", "timestamp": "16:05"}
+      ]
+    },
+    {
+      "sample_id": "APK_10",
+      "category": "fake_courier_apk",
+      "category_label": "Fake Courier APK / Resi .apk Malware",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Cek-Tagihan-Kurir.apk malware",
+      "expected_red_flags": ["Cek-Tagihan-Kurir.apk"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kurir tidak bisa cetak label, silakan klik dan pasang Cek-Tagihan-Kurir.apk di ponsel utama toko kakak.", "timestamp": "17:00"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_01",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Fake QRIS scan to receive refund money (actually deducts balance)",
+      "expected_red_flags": ["scan qris untuk pencairan", "refund"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak pesanan saya dibatalkan sistem, untuk proses refund pengembalian dana silakan scan QRIS untuk pencairan saldo toko kakak.", "timestamp": "09:20"},
+        {"sender": "impersonator", "text": "Setelah scan QRIS itu ketik nominal Rp1.500.000 agar dana langsung masuk ke rekening kakak.", "timestamp": "09:22"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_02",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "QRIS refund activation trap",
+      "expected_red_flags": ["qris", "biaya pancingan", "refund"],
+      "turns": [
+        {"sender": "impersonator", "text": "Dana komplain refund saya nyangkut kak, kata admin kakak harus bayar QRIS biaya pancingan Rp499.000 dulu supaya saldo terbuka.", "timestamp": "10:05"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_03",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Predatory kode unik pencairan / biaya pancingan without saying literal refund/qris",
+      "expected_red_flags": ["biaya pancingan", "kode unik pencairan"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo seller, pembayaran saya Rp3.200.000 tertahan limit toko baru.", "timestamp": "11:00"},
+        {"sender": "impersonator", "text": "Kakak wajib transfer biaya pancingan dengan kode unik pencairan Rp499.123 ke rekening virtual ini, nanti kembali utuh 100%.", "timestamp": "11:02"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_04",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "QRIS scan for refund release",
+      "expected_red_flags": ["scan qris untuk klaim", "pengembalian dana"],
+      "turns": [
+        {"sender": "impersonator", "text": "Untuk mempercepat pengembalian dana pesanan yang gagal, silakan scan QRIS untuk klaim saldo di aplikasi mobile banking kakak.", "timestamp": "11:50"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_05",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Saldo mengendap / dana jaminan aktivasi pencairan",
+      "expected_red_flags": ["dana jaminan", "saldo mengendap"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak uang pembelian saya belum bisa masuk ke dompet toko karena belum ada saldo mengendap.", "timestamp": "12:40"},
+        {"sender": "impersonator", "text": "Tolong setor dana jaminan aktivasi Rp750.000 sekarang supaya seluruh dana pesanan langsung cair.", "timestamp": "12:42"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_06",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Manual refund outside app via QRIS barcode",
+      "expected_red_flags": ["refund manual di luar aplikasi", "scan qris"],
+      "turns": [
+        {"sender": "impersonator", "text": "Jangan lewat Pusat Resolusi kak lama, kita proses refund manual di luar aplikasi saja, cukup scan QRIS yang saya kirim ini.", "timestamp": "13:30"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_07",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Kode unik verifikasi pencairan saldo",
+      "expected_red_flags": ["kode unik verifikasi", "biaya aktivasi refund"],
+      "turns": [
+        {"sender": "impersonator", "text": "Pembatalan pesanan membutuhkan biaya aktivasi refund dengan transfer kode unik verifikasi Rp250.888 agar sistem sinkron.", "timestamp": "14:25"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_08",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Scan QRIS to unlock stuck refund balance",
+      "expected_red_flags": ["scan qris untuk aktifkan", "refund"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak ini barcode resmi dari bank, silakan scan QRIS untuk aktifkan pencairan refund pesanan saya senilai Rp2.100.000.", "timestamp": "15:30"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_09",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Biaya pancingan pencairan saldo",
+      "expected_red_flags": ["dana pancingan", "kode unik pencairan"],
+      "turns": [
+        {"sender": "impersonator", "text": "Rekening toko kakak terdeteksi pasif, wajib kirim dana pancingan sesuai kode unik pencairan Rp399.000 agar dana pembeli cair.", "timestamp": "16:20"}
+      ]
+    },
+    {
+      "sample_id": "QRIS_10",
+      "category": "qris_refund_trap",
+      "category_label": "QRIS / Refund Admin Fee Trap",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Transfer QRIS admin fee for refund",
+      "expected_red_flags": ["transfer qris untuk refund", "biaya pancingan"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak tolong segera transfer QRIS untuk refund dan biaya pancingan admin Rp150.000 supaya komplain saya cabut.", "timestamp": "17:10"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_01",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Explicit WhatsApp number and direct transfer lure",
+      "expected_red_flags": ["whatsapp", "081299887766", "transfer langsung ke rekening pribadi"],
+      "turns": [
+        {"sender": "impersonator", "text": "Gan, kalau beli lewat aplikasi kena biaya layanan mahal. Hubungi WhatsApp saya di 081299887766 aja.", "timestamp": "09:15"},
+        {"sender": "impersonator", "text": "Nanti transfer langsung ke rekening pribadi saya kasih diskon 30%.", "timestamp": "09:16"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_02",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Explicit WhatsApp contact for off-platform payment",
+      "expected_red_flags": ["whatsapp", "085711223344"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak chat ke WhatsApp 085711223344 sekarang ya, saya sudah kirim bukti transfer manual di sana, tolong langsung kirim barangnya.", "timestamp": "10:00"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_03",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Leetspeak phone number O8I2-3456-789O + pressure to ship before payment settles",
+      "expected_red_flags": ["O8I2-3456-789O", "lanjut ke wa", "kirim barang dulu"],
+      "turns": [
+        {"sender": "impersonator", "text": "Gan kurir GrabExpress saya sudah di depan toko, lanjut ke WA O8I2-3456-789O ya.", "timestamp": "10:50"},
+        {"sender": "impersonator", "text": "Tolong kirim barang dulu ke driver sekarang, bukti tf bank lagi proses kliring pasti masuk sore nanti.", "timestamp": "10:51"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_04",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Telegram t.me link + direct personal bank transfer bypass",
+      "expected_red_flags": ["t.me/gudang_elektronik_murah", "lanjut tele", "tf langsung ke rek pribadi"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak untuk harga flash sale iPhone 15 Rp5 juta wajib lanjut tele di t.me/gudang_elektronik_murah.", "timestamp": "11:30"},
+        {"sender": "impersonator", "text": "Pembayaran tf langsung ke rek pribadi bendahara gudang tanpa lewat escrow aplikasi.", "timestamp": "11:31"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_05",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Spelled-out/spaced Indonesian phone number + wa.me link",
+      "expected_red_flags": ["wa.me/6281388990011", "pindah ke wa"],
+      "turns": [
+        {"sender": "impersonator", "text": "Sis jangan checkout di aplikasi, pindah ke WA klik wa.me/6281388990011 biar gak kena potongan admin.", "timestamp": "12:15"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_06",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Pressure to ship immediately with fake chat transfer screenshot claim",
+      "expected_red_flags": ["kirim paket dulu", "uang masuk belakangan", "hubungi wa"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kak ini screenshot m-banking saya sudah transfer Rp6.500.000 tapi status aplikasi masih belum bayar karena gangguan bank.", "timestamp": "13:10"},
+        {"sender": "impersonator", "text": "Wajib kirim paket dulu pakai kurir instan sekarang ya, uang masuk belakangan, hubungi WA kosong812-7766-5544.", "timestamp": "13:12"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_07",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Direct WhatsApp lure with phone number",
+      "expected_red_flags": ["whatsapp", "081900112233"],
+      "turns": [
+        {"sender": "impersonator", "text": "Silakan hubungi WhatsApp admin gudang di 081900112233 untuk pembayaran manual di luar aplikasi.", "timestamp": "14:00"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_08",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Obfuscated phone 0821 . 4455 . 6677 and direct transfer",
+      "expected_red_flags": ["0821 . 4455 . 6677", "chat wa", "transfer langsung ke rekening pribadi"],
+      "turns": [
+        {"sender": "impersonator", "text": "Gan batalkan pesanan di aplikasi, chat WA ke 0821 . 4455 . 6677 lalu transfer langsung ke rekening pribadi saya supaya langsung dikirim malam ini.", "timestamp": "15:15"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_09",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Telegram escrow bypass + ship before payment verification",
+      "expected_red_flags": ["t.me/rekber_instan_id", "kirim barang dulu"],
+      "turns": [
+        {"sender": "impersonator", "text": "Saya sudah titip dana di grup t.me/rekber_instan_id kak, tolong kirim barang dulu ke alamat saya nanti admin grup yang cairkan.", "timestamp": "16:25"}
+      ]
+    },
+    {
+      "sample_id": "ESCROW_10",
+      "category": "off_platform_escrow_bypass",
+      "category_label": "Off-Platform WhatsApp/Telegram Escrow Bypass",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "WhatsApp number escrow bypass",
+      "expected_red_flags": ["whatsapp", "087812345678"],
+      "turns": [
+        {"sender": "impersonator", "text": "Langsung japri WhatsApp 087812345678 ya kak untuk pelunasan manual tanpa rekber aplikasi.", "timestamp": "17:20"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_01",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "standard",
+      "notes": "Explicit Admin Shopee impersonation",
+      "expected_red_flags": ["admin shopee", "akun dibekukan"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo, kami dari Admin Shopee Pusat memberitahukan bahwa toko Anda melanggar kebijakan.", "timestamp": "09:05"},
+        {"sender": "impersonator", "text": "Akun dibekukan dalam 30 menit jika tidak segera konfirmasi saldo melalui tautan verifikasi kami.", "timestamp": "09:06"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_02",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Fake [SISTEM PERINGATAN RESMI] header with 15-minute account freeze threat",
+      "expected_red_flags": ["[SISTEM PERINGATAN RESMI]", "toko anda akan dibekukan dalam 15 menit"],
+      "turns": [
+        {"sender": "impersonator", "text": "[SISTEM PERINGATAN RESMI] Deteksi transaksi mencurigakan pada etalase Anda.", "timestamp": "10:15"},
+        {"sender": "impersonator", "text": "Toko Anda akan dibekukan dalam 15 menit dan seluruh saldo ditangguhkan apabila tidak melakukan verifikasi identitas penjual sekarang.", "timestamp": "10:16"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_03",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Tim Verifikasi Toko impersonation demanding urgent balance unlock",
+      "expected_red_flags": ["tim verifikasi toko", "saldo anda tertahan"],
+      "turns": [
+        {"sender": "impersonator", "text": "Pemberitahuan dari Tim Verifikasi Toko Marketplace: Saldo Anda tertahan otomatis sebesar Rp12.400.000.", "timestamp": "11:10"},
+        {"sender": "impersonator", "text": "Segera balas pesan ini dengan nomor kartu ATM dan masa berlaku dalam 10 menit sebelum akun dinonaktifkan.", "timestamp": "11:12"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_04",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "dev",
+      "difficulty": "obfuscated",
+      "notes": "Fake Flash Sale / Giveaway winner tax scam",
+      "expected_red_flags": ["pajak pemenang undian", "flash sale"],
+      "turns": [
+        {"sender": "impersonator", "text": "Selamat! Akun Anda terpilih sebagai pemenang utama Gebyar Flash Sale 11.11 berhadiah Rp25.000.000.", "timestamp": "12:00"},
+        {"sender": "impersonator", "text": "Silakan lunasi pajak pemenang undian flash sale sebesar Rp500.000 dalam 20 menit agar hadiah tidak hangus.", "timestamp": "12:02"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_05",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "[ADMIN PUSAT BANTUAN] urgent account suspension threat",
+      "expected_red_flags": ["[ADMIN PUSAT BANTUAN]", "akun anda akan dinonaktifkan dalam 15 menit"],
+      "turns": [
+        {"sender": "impersonator", "text": "[ADMIN PUSAT BANTUAN] Laporan penipuan diterima atas toko Anda. Akun Anda akan dinonaktifkan dalam 15 menit jika tidak menyerahkan kode verifikasi keamanan.", "timestamp": "13:00"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_06",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "standard",
+      "notes": "Admin Shopee impersonation with freeze threat",
+      "expected_red_flags": ["admin shopee", "dibekukan dalam 10 menit"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kami Admin Shopee menginformasikan dompet penjual Anda akan dibekukan dalam 10 menit kecuali Anda membalas dengan kode otorisasi.", "timestamp": "13:50"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_07",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "val",
+      "difficulty": "obfuscated",
+      "notes": "Tim Keamanan Marketplace + giveaway admin fee",
+      "expected_red_flags": ["tim keamanan marketplace", "biaya admin pemenang giveaway"],
+      "turns": [
+        {"sender": "impersonator", "text": "Halo Kak, Tim Keamanan Marketplace mengumumkan toko kakak memenangkan hadiah emas 10 gram. Segera transfer biaya admin pemenang giveaway Rp350.000.", "timestamp": "14:40"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_08",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "[SISTEM OTOMATIS MARKETPLACE] 10-minute freeze coercion",
+      "expected_red_flags": ["[SISTEM OTOMATIS MARKETPLACE]", "toko dibekukan dalam 10 menit"],
+      "turns": [
+        {"sender": "impersonator", "text": "[SISTEM OTOMATIS MARKETPLACE] Toko dibekukan dalam 10 menit karena belum memperbarui sertifikat pencairan dana penjual.", "timestamp": "15:45"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_09",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "obfuscated",
+      "notes": "Tim Audit Toko + pajak pemenang flash sale",
+      "expected_red_flags": ["tim audit toko", "pajak pemenang flash sale"],
+      "turns": [
+        {"sender": "impersonator", "text": "Kami dari Tim Audit Toko mengabarkan Anda wajib menyelesaikan pajak pemenang flash sale sebesar Rp450.000 sebelum jam 18.00 WIB.", "timestamp": "16:35"}
+      ]
+    },
+    {
+      "sample_id": "FAKECS_10",
+      "category": "fake_cs_urgency",
+      "category_label": "Fake Customer Service / Flash Sale Urgency Scam",
+      "is_scam": true,
+      "split": "sealed_test",
+      "difficulty": "standard",
+      "notes": "Admin Shopee impersonation demanding urgent action",
+      "expected_red_flags": ["admin shopee", "saldo ditangguhkan dalam 5 menit"],
+      "turns": [
+        {"sender": "impersonator", "text": "Peringatan Admin Shopee: Saldo ditangguhkan dalam 5 menit apabila penjual menolak proses sinkronisasi buku tabungan.", "timestamp": "17:30"}
+      ]
+    }
+  ]
+}

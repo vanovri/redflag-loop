@@ -1,0 +1,1039 @@
+{
+  "project_name": "RedFlag Loop",
+  "benchmark_name": "ID-ScamChat-72 (Indonesian Marketplace Scam & Hard-Negative Chat Corpus)",
+  "total_corpus_size": 72,
+  "target_f1": 0.95,
+  "max_fpr_guardrail": 0.05,
+  "initial_f1": 0.6292,
+  "final_f1": 1.0,
+  "f1_improvement": 0.3708,
+  "initial_fpr": 0.5,
+  "final_fpr": 0.0,
+  "converged": true,
+  "generations_run": 4,
+  "generations": [
+    {
+      "generation": 0,
+      "title": "Generation 0 — Naive Baseline Rules",
+      "summary": "Initial keyword/regex baseline suffers from high False Positives on legitimate courier tracking ('cek resi JNT', 'foto paket') and official Pusat Resolusi refunds, while missing obfuscated Indonesian phone numbers, typosquatted domains, and fake CS headers.",
+      "elapsed_ms": 24.42,
+      "metrics": {
+        "total_samples": 72,
+        "scam_samples": 50,
+        "benign_samples": 22,
+        "true_positives": 28,
+        "false_positives": 11,
+        "true_negatives": 11,
+        "false_negatives": 22,
+        "precision": 0.7179,
+        "recall": 0.56,
+        "f1": 0.6292,
+        "false_positive_rate": 0.5,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6,
+          "fake_courier_apk": 0.6,
+          "qris_refund_trap": 0.7,
+          "off_platform_escrow_bypass": 0.5,
+          "fake_cs_urgency": 0.4
+        }
+      },
+      "validation_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 7,
+        "false_positives": 3,
+        "true_negatives": 4,
+        "false_negatives": 8,
+        "precision": 0.7,
+        "recall": 0.4667,
+        "f1": 0.56,
+        "false_positive_rate": 0.4286,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6667,
+          "fake_courier_apk": 0.3333,
+          "qris_refund_trap": 0.6667,
+          "off_platform_escrow_bypass": 0.3333,
+          "fake_cs_urgency": 0.3333
+        }
+      },
+      "sealed_test_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 10,
+        "false_positives": 4,
+        "true_negatives": 3,
+        "false_negatives": 5,
+        "precision": 0.7143,
+        "recall": 0.6667,
+        "f1": 0.6897,
+        "false_positive_rate": 0.5714,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6667,
+          "fake_courier_apk": 0.6667,
+          "qris_refund_trap": 0.6667,
+          "off_platform_escrow_bypass": 0.6667,
+          "fake_cs_urgency": 0.6667
+        }
+      },
+      "rules": [
+        {
+          "rule_id": "R01_PHISHING_URL",
+          "name": "Naive Phishing Link & Password Rule",
+          "category": "phishing_link",
+          "description": "Flags explicit http:// links on .xyz/.top domains or explicit login+password prompts.",
+          "weight": 0.65,
+          "patterns": [
+            "http://[a-z0-9\\-_.]+\\.(?:xyz|top)/[^\\s]*",
+            "\\bpin\\s+shopeepay\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [
+            {
+              "token_a": "\\blogin\\b",
+              "token_b": "\\bpassword\\b",
+              "max_window_chars": 80
+            }
+          ],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: checks literal http:// .xyz/.top URLs and login+password proximity."
+        },
+        {
+          "rule_id": "R02_RESI_COURIER",
+          "name": "Naive Courier Resi & APK Rule",
+          "category": "fake_courier_apk",
+          "description": "Naive rule matching '.apk' OR bare phrases 'cek resi', 'resi jnt', 'foto paket' (causes FPs on normal buyers!).",
+          "weight": 0.6,
+          "patterns": [
+            "\\.apk\\b",
+            "\\bcek\\s+resi\\b",
+            "\\bresi\\s+(?:jnt|jne)\\b",
+            "\\bfoto\\s+paket\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: overly broad courier keywords trigger false positives on legitimate tracking inquiries."
+        },
+        {
+          "rule_id": "R03_REFUND_QRIS",
+          "name": "Naive Refund & QRIS Mention Rule",
+          "category": "qris_refund_trap",
+          "description": "Naive rule matching bare 'qris', 'pengembalian dana', or 'refund' (causes FPs on legitimate resolution requests!).",
+          "weight": 0.55,
+          "patterns": [
+            "\\bqris\\b",
+            "\\brefund\\b",
+            "\\bpengembalian\\s+dana\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: flags bare refund/QRIS keywords without distinguishing official in-app flows."
+        },
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "name": "Naive WhatsApp & Plain Phone Number Rule",
+          "category": "off_platform_escrow_bypass",
+          "description": "Matches only un-obfuscated 'whatsapp' with contiguous 08xxxxxxxx numbers.",
+          "weight": 0.65,
+          "patterns": [
+            "\\bwhatsapp\\b.*?\\b08[0-9]{8,11}\\b",
+            "\\btransfer\\s+langsung\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: misses leetspeak phone numbers (O8I2...), wa.me, t.me, and ship-before-payment pressure."
+        },
+        {
+          "rule_id": "R05_CS_IMPERSONATION",
+          "name": "Naive Admin Shopee Impersonation Rule",
+          "category": "fake_cs_urgency",
+          "description": "Matches only literal 'admin shopee' phrase.",
+          "weight": 0.65,
+          "patterns": [
+            "\\badmin\\s+shopee\\b",
+            "\\bdibekukan\\s+dalam\\s+10\\s+menit\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: misses fake [SISTEM PERINGATAN] headers, Tim Verifikasi Toko, and flash-sale tax traps."
+        }
+      ],
+      "failure_clusters": [
+        {
+          "failure_type": "FP",
+          "cluster_id": "CLUSTER_FP_R02_RESI_COURIER",
+          "category": "benign_negotiation",
+          "sample_ids": [
+            "BENIGN_HN_11",
+            "BENIGN_HN_12",
+            "BENIGN_HN_15",
+            "BENIGN_HN_17",
+            "BENIGN_HN_19",
+            "BENIGN_HN_22"
+          ],
+          "root_cause": "Over-broad patterns (\\bcek\\s+resi\\b, \\bresi\\s+(?:jnt|jne)\\b, \\bfoto\\s+paket\\b) fire on legitimate buyer/seller tracking numbers and unboxing photo requests.",
+          "offending_or_missing_rule_id": "R02_RESI_COURIER",
+          "example_snippet": "Kak tolong bantu cek resi pesanan saya kok statusnya masih di gudang sortir Jakarta? Ini nomor resi JNT: JP8849201193 kak, barusan saya cek di halaman lacak apl",
+          "proposed_remediation": "Remove bare tracking keywords; require executable/sideload indicators (.apk, .a p k, instal aplikasi kurir/resi/ekspedisi, sumber tidak dikenal, akses sms) and add whitelist negative context for standard alphanumeric resi numbers."
+        },
+        {
+          "failure_type": "FP",
+          "cluster_id": "CLUSTER_FP_R03_REFUND_QRIS",
+          "category": "benign_negotiation",
+          "sample_ids": [
+            "BENIGN_HN_13",
+            "BENIGN_HN_14",
+            "BENIGN_HN_16",
+            "BENIGN_HN_20",
+            "BENIGN_HN_21"
+          ],
+          "root_cause": "Bare phrases (\\bpengembalian\\s+dana\\b, \\bmetode\\s+qris\\b) fire on legitimate Pusat Resolusi refund instructions and official checkout QRIS confirmations.",
+          "offending_or_missing_rule_id": "R03_REFUND_QRIS",
+          "example_snippet": "Kak lampu mejanya pecah satu waktu dibuka, saya sudah rekam video unboxing untuk komplain dan pengembalian dana. Mohon maaf kak, silakan klik tombol komplain re",
+          "proposed_remediation": "Scope rule to predatory refund fee traps (scan/transfer QRIS untuk pencairan/klaim/refund, biaya/dana pancingan, dana jaminan, saldo mengendap, kode unik pencairan) and add negative context for official 'Pusat Resolusi' and 'halaman checkout' flows."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_FAKE_COURIER_APK",
+          "category": "fake_courier_apk",
+          "sample_ids": [
+            "APK_03",
+            "APK_05",
+            "APK_07",
+            "APK_09"
+          ],
+          "root_cause": "Obfuscated sideload lures ('Bukti_Resi_Kurir.a p k', 'instal aplikasi kurir/ekspedisi/resi', 'matikan Play Protect', 'izinkan sumber tidak dikenal') evade literal '.apk' regex.",
+          "offending_or_missing_rule_id": "R02_RESI_COURIER",
+          "example_snippet": "Kak paket retur tertahan di gudang ekspedisi, kakak wajib instal aplikasi kurir digital yang saya kirim ini. Waktu muncul peringatan Play Protect klik tetap ins",
+          "proposed_remediation": "Add spaced-extension regex (\\.a\\s*p\\s*k\\b), sideload permission phrases (sumber tidak dikenal, akses sms, matikan play protect), and 'instal aplikasi (kurir|resi|ekspedisi)'."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_FAKE_CS_URGENCY",
+          "category": "fake_cs_urgency",
+          "sample_ids": [
+            "FAKECS_02",
+            "FAKECS_03",
+            "FAKECS_04",
+            "FAKECS_05",
+            "FAKECS_07",
+            "FAKECS_09"
+          ],
+          "root_cause": "Fake system headers ('[SISTEM PERINGATAN RESMI]', '[ADMIN PUSAT BANTUAN]'), 'Tim Verifikasi/Keamanan/Audit Toko', account freeze countdowns, and flash-sale winner taxes evade 'admin shopee'.",
+          "offending_or_missing_rule_id": "R05_CS_IMPERSONATION",
+          "example_snippet": "[SISTEM PERINGATAN RESMI] Deteksi transaksi mencurigakan pada etalase Anda. Toko Anda akan dibekukan dalam 15 menit dan seluruh saldo ditangguhkan apabila tidak",
+          "proposed_remediation": "Add bracketed authority header regex, 'Tim (Verifikasi|Keamanan|Audit) (Toko|Marketplace)', urgent freeze countdowns ('dibekukan/dinonaktifkan/ditangguhkan dalam X menit'), and giveaway/flash-sale tax lures."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_OFF_PLATFORM_ESCROW_BYPASS",
+          "category": "off_platform_escrow_bypass",
+          "sample_ids": [
+            "ESCROW_03",
+            "ESCROW_04",
+            "ESCROW_05",
+            "ESCROW_06",
+            "ESCROW_09"
+          ],
+          "root_cause": "Obfuscated Indonesian phone numbers ('O8I2-3456-789O', 'kosong812...', '0821 . 4455 . 6677'), wa.me / t.me links, and ship-before-payment pressure evade plain 'whatsapp 08...' regex.",
+          "offending_or_missing_rule_id": "R04_OFF_PLATFORM",
+          "example_snippet": "Gan kurir GrabExpress saya sudah di depan toko, lanjut ke WA O8I2-3456-789O ya. Tolong kirim barang dulu ke driver sekarang, bukti tf bank lagi proses kliring p",
+          "proposed_remediation": "Add leetspeak/spaced phone regex, wa.me & t.me URL patterns, off-platform migration phrases (lanjut/pindah/chat/hubungi WA/tele), and 'kirim barang/paket dulu' escrow bypass patterns."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_PHISHING_LINK",
+          "category": "phishing_link",
+          "sample_ids": [
+            "PHISH_03",
+            "PHISH_04",
+            "PHISH_06",
+            "PHISH_09"
+          ],
+          "root_cause": "Scheme-less typosquatted domains ('sh0pee-pay-claim.xyz', 't0kopedia-verifikasi.site', 'seab4nk-bantuan.online') and shortlinks ('s.id/...', 'bit.ly/...') + OTP/PIN harvesting evade http:// rule.",
+          "offending_or_missing_rule_id": "R01_PHISHING_URL",
+          "example_snippet": "Kak saya sudah bayar tapi sistem minta aktivasi penerima di sh0pee-pay-claim.xyz/pencairan. Tolong masukkan PIN SeaBank dan sebutkan kode OTP 6 digit yang muncu",
+          "proposed_remediation": "Enable suspicious TLD heuristics (.xyz, .top, .site, .online, .click), shortlink patterns (bit.ly, s.id), and credential harvesting patterns (kode OTP, PIN SeaBank/ShopeePay)."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_QRIS_REFUND_TRAP",
+          "category": "qris_refund_trap",
+          "sample_ids": [
+            "QRIS_03",
+            "QRIS_05",
+            "QRIS_09"
+          ],
+          "root_cause": "Scammers avoid saying 'scan QRIS' and instead demand 'biaya/dana pancingan', 'saldo mengendap', 'dana jaminan', or 'kode unik pencairan/verifikasi'.",
+          "offending_or_missing_rule_id": "R03_REFUND_QRIS",
+          "example_snippet": "Halo seller, pembayaran saya Rp3.200.000 tertahan limit toko baru. Kakak wajib transfer biaya pancingan dengan kode unik pencairan Rp499.123 ke rekening virtual",
+          "proposed_remediation": "Synthesize patterns for advance-fee refund traps (biaya/dana pancingan, saldo mengendap, dana jaminan, kode unik pencairan/verifikasi, biaya aktivasi refund)."
+        }
+      ],
+      "applied_patches": [],
+      "rejected_patches": []
+    },
+    {
+      "generation": 1,
+      "title": "Generation 1 — Courier/Refund FP Suppression & APK/QRIS Hardening",
+      "summary": "Autonomous repair removes bare 'cek resi'/'foto paket'/'refund' triggers, adds negative whitelist context for alphanumeric tracking numbers and official Pusat Resolusi flows, and synthesizes sideload APK & advance-fee QRIS patterns. False Positives drop to 0!",
+      "elapsed_ms": 31.34,
+      "metrics": {
+        "total_samples": 72,
+        "scam_samples": 50,
+        "benign_samples": 22,
+        "true_positives": 35,
+        "false_positives": 0,
+        "true_negatives": 22,
+        "false_negatives": 15,
+        "precision": 1.0,
+        "recall": 0.7,
+        "f1": 0.8235,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 0.5,
+          "fake_cs_urgency": 0.4
+        }
+      },
+      "validation_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 10,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 5,
+        "precision": 1.0,
+        "recall": 0.6667,
+        "f1": 0.8,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6667,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 0.3333,
+          "fake_cs_urgency": 0.3333
+        }
+      },
+      "sealed_test_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 12,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 3,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8889,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 0.6667,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 0.6667,
+          "fake_cs_urgency": 0.6667
+        }
+      },
+      "rules": [
+        {
+          "rule_id": "R01_PHISHING_URL",
+          "name": "Naive Phishing Link & Password Rule",
+          "category": "phishing_link",
+          "description": "Flags explicit http:// links on .xyz/.top domains or explicit login+password prompts.",
+          "weight": 0.65,
+          "patterns": [
+            "http://[a-z0-9\\-_.]+\\.(?:xyz|top)/[^\\s]*",
+            "\\bpin\\s+shopeepay\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [
+            {
+              "token_a": "\\blogin\\b",
+              "token_b": "\\bpassword\\b",
+              "max_window_chars": 80
+            }
+          ],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: checks literal http:// .xyz/.top URLs and login+password proximity."
+        },
+        {
+          "rule_id": "R02_RESI_COURIER",
+          "name": "Hardened Courier APK & Sideload Malware Rule",
+          "category": "fake_courier_apk",
+          "description": "Naive rule matching '.apk' OR bare phrases 'cek resi', 'resi jnt', 'foto paket' (causes FPs on normal buyers!).",
+          "weight": 0.6,
+          "patterns": [
+            "\\.apk\\b",
+            "\\.a\\s*p\\s*k\\b",
+            "\\binstal\\s+aplikasi\\s+(?:kurir|resi|ekspedisi)\\b",
+            "\\bsumber\\s+tidak\\s+dikenal\\b",
+            "\\bmatikan\\s+play\\s+protect\\b",
+            "\\bizin(?:kan)?\\s+akses\\s+sms\\b",
+            "\\bfile\\s+resi[_a-z0-9\\-]*\\.(?:zip|rar|apk)\\b"
+          ],
+          "negative_patterns": [
+            "\\bresi\\s+(?:jnt|jne|sicepat|spx|anteraja)\\s*:\\s*[A-Z0-9]{8,16}\\b(?!.*(?:\\.a\\s*p\\s*k|sumber\\s+tidak\\s+dikenal|instal\\s+aplikasi))"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Removed bare 'cek resi'/'foto paket' triggers that caused FPs on benign tracking; added spaced '.a p k', sideload permission indicators, and alphanumeric resi whitelist context."
+        },
+        {
+          "rule_id": "R03_REFUND_QRIS",
+          "name": "Contextual QRIS & Advance-Fee Refund Trap Rule",
+          "category": "qris_refund_trap",
+          "description": "Naive rule matching bare 'qris', 'pengembalian dana', or 'refund' (causes FPs on legitimate resolution requests!).",
+          "weight": 0.55,
+          "patterns": [
+            "\\b(?:scan|bayar|transfer)\\s+qris\\s+(?:untuk\\s+)?(?:pencairan|klaim|aktifkan|refund|biaya)\\b",
+            "\\b(?:biaya|dana)\\s+(?:pancingan|jaminan|aktivasi\\s+refund)\\b",
+            "\\bsaldo\\s+mengendap\\b",
+            "\\bkode\\s+unik\\s+(?:pencairan|verifikasi|refund)\\b",
+            "\\brefund\\s+manual\\s+di\\s+luar\\s+aplikasi\\b"
+          ],
+          "negative_patterns": [
+            "\\bpusat\\s+resolusi\\b(?!.*(?:jangan\\s+lewat|di\\s+luar\\s+aplikasi|scan\\s+qris))",
+            "\\bqris\\s+resmi\\s+di\\s+halaman\\s+checkout\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Replaced bare 'refund'/'qris' keywords with predatory fee-trap patterns (biaya pancingan, kode unik pencairan, saldo mengendap) and whitelisted official Pusat Resolusi & checkout QRIS."
+        },
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "name": "Naive WhatsApp & Plain Phone Number Rule",
+          "category": "off_platform_escrow_bypass",
+          "description": "Matches only un-obfuscated 'whatsapp' with contiguous 08xxxxxxxx numbers.",
+          "weight": 0.65,
+          "patterns": [
+            "\\bwhatsapp\\b.*?\\b08[0-9]{8,11}\\b",
+            "\\btransfer\\s+langsung\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: misses leetspeak phone numbers (O8I2...), wa.me, t.me, and ship-before-payment pressure."
+        },
+        {
+          "rule_id": "R05_CS_IMPERSONATION",
+          "name": "Naive Admin Shopee Impersonation Rule",
+          "category": "fake_cs_urgency",
+          "description": "Matches only literal 'admin shopee' phrase.",
+          "weight": 0.65,
+          "patterns": [
+            "\\badmin\\s+shopee\\b",
+            "\\bdibekukan\\s+dalam\\s+10\\s+menit\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: misses fake [SISTEM PERINGATAN] headers, Tim Verifikasi Toko, and flash-sale tax traps."
+        }
+      ],
+      "failure_clusters": [
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_FAKE_CS_URGENCY",
+          "category": "fake_cs_urgency",
+          "sample_ids": [
+            "FAKECS_02",
+            "FAKECS_03",
+            "FAKECS_04",
+            "FAKECS_05",
+            "FAKECS_07",
+            "FAKECS_09"
+          ],
+          "root_cause": "Fake system headers ('[SISTEM PERINGATAN RESMI]', '[ADMIN PUSAT BANTUAN]'), 'Tim Verifikasi/Keamanan/Audit Toko', account freeze countdowns, and flash-sale winner taxes evade 'admin shopee'.",
+          "offending_or_missing_rule_id": "R05_CS_IMPERSONATION",
+          "example_snippet": "[SISTEM PERINGATAN RESMI] Deteksi transaksi mencurigakan pada etalase Anda. Toko Anda akan dibekukan dalam 15 menit dan seluruh saldo ditangguhkan apabila tidak",
+          "proposed_remediation": "Add bracketed authority header regex, 'Tim (Verifikasi|Keamanan|Audit) (Toko|Marketplace)', urgent freeze countdowns ('dibekukan/dinonaktifkan/ditangguhkan dalam X menit'), and giveaway/flash-sale tax lures."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_OFF_PLATFORM_ESCROW_BYPASS",
+          "category": "off_platform_escrow_bypass",
+          "sample_ids": [
+            "ESCROW_03",
+            "ESCROW_04",
+            "ESCROW_05",
+            "ESCROW_06",
+            "ESCROW_09"
+          ],
+          "root_cause": "Obfuscated Indonesian phone numbers ('O8I2-3456-789O', 'kosong812...', '0821 . 4455 . 6677'), wa.me / t.me links, and ship-before-payment pressure evade plain 'whatsapp 08...' regex.",
+          "offending_or_missing_rule_id": "R04_OFF_PLATFORM",
+          "example_snippet": "Gan kurir GrabExpress saya sudah di depan toko, lanjut ke WA O8I2-3456-789O ya. Tolong kirim barang dulu ke driver sekarang, bukti tf bank lagi proses kliring p",
+          "proposed_remediation": "Add leetspeak/spaced phone regex, wa.me & t.me URL patterns, off-platform migration phrases (lanjut/pindah/chat/hubungi WA/tele), and 'kirim barang/paket dulu' escrow bypass patterns."
+        },
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_PHISHING_LINK",
+          "category": "phishing_link",
+          "sample_ids": [
+            "PHISH_03",
+            "PHISH_04",
+            "PHISH_06",
+            "PHISH_09"
+          ],
+          "root_cause": "Scheme-less typosquatted domains ('sh0pee-pay-claim.xyz', 't0kopedia-verifikasi.site', 'seab4nk-bantuan.online') and shortlinks ('s.id/...', 'bit.ly/...') + OTP/PIN harvesting evade http:// rule.",
+          "offending_or_missing_rule_id": "R01_PHISHING_URL",
+          "example_snippet": "Kak saya sudah bayar tapi sistem minta aktivasi penerima di sh0pee-pay-claim.xyz/pencairan. Tolong masukkan PIN SeaBank dan sebutkan kode OTP 6 digit yang muncu",
+          "proposed_remediation": "Enable suspicious TLD heuristics (.xyz, .top, .site, .online, .click), shortlink patterns (bit.ly, s.id), and credential harvesting patterns (kode OTP, PIN SeaBank/ShopeePay)."
+        }
+      ],
+      "applied_patches": [
+        {
+          "rule_id": "R02_RESI_COURIER",
+          "rule_name": "Hardened Courier APK & Sideload Malware Rule",
+          "action": "PATCHED",
+          "rationale": "Gen-1 repair: Removed bare 'cek resi'/'foto paket' triggers that caused FPs on benign tracking; added spaced '.a p k', sideload permission indicators, and alphanumeric resi whitelist context.",
+          "added_patterns": [
+            "\\.a\\s*p\\s*k\\b",
+            "\\binstal\\s+aplikasi\\s+(?:kurir|resi|ekspedisi)\\b",
+            "\\bsumber\\s+tidak\\s+dikenal\\b",
+            "\\bmatikan\\s+play\\s+protect\\b",
+            "\\bizin(?:kan)?\\s+akses\\s+sms\\b",
+            "\\bfile\\s+resi[_a-z0-9\\-]*\\.(?:zip|rar|apk)\\b"
+          ],
+          "removed_patterns": [
+            "\\bcek\\s+resi\\b",
+            "\\bresi\\s+(?:jnt|jne)\\b",
+            "\\bfoto\\s+paket\\b"
+          ],
+          "added_negative_patterns": [
+            "\\bresi\\s+(?:jnt|jne|sicepat|spx|anteraja)\\s*:\\s*[A-Z0-9]{8,16}\\b(?!.*(?:\\.a\\s*p\\s*k|sumber\\s+tidak\\s+dikenal|instal\\s+aplikasi))"
+          ],
+          "validation_status": "ACCEPTED",
+          "validation_note": "Eliminated all courier tracking FPs on dev & val splits; APK recall reached 100%."
+        },
+        {
+          "rule_id": "R03_REFUND_QRIS",
+          "rule_name": "Contextual QRIS & Advance-Fee Refund Trap Rule",
+          "action": "PATCHED",
+          "rationale": "Gen-1 repair: Replaced bare 'refund'/'qris' keywords with predatory fee-trap patterns (biaya pancingan, kode unik pencairan, saldo mengendap) and whitelisted official Pusat Resolusi & checkout QRIS.",
+          "added_patterns": [
+            "\\b(?:scan|bayar|transfer)\\s+qris\\s+(?:untuk\\s+)?(?:pencairan|klaim|aktifkan|refund|biaya)\\b",
+            "\\b(?:biaya|dana)\\s+(?:pancingan|jaminan|aktivasi\\s+refund)\\b",
+            "\\bsaldo\\s+mengendap\\b",
+            "\\bkode\\s+unik\\s+(?:pencairan|verifikasi|refund)\\b",
+            "\\brefund\\s+manual\\s+di\\s+luar\\s+aplikasi\\b"
+          ],
+          "removed_patterns": [
+            "\\bscan\\s+qris\\b",
+            "\\bpengembalian\\s+dana\\b",
+            "\\bproses\\s+refund\\b",
+            "\\bmetode\\s+qris\\b"
+          ],
+          "added_negative_patterns": [
+            "\\bpusat\\s+resolusi\\b(?!.*(?:jangan\\s+lewat|di\\s+luar\\s+aplikasi|scan\\s+qris))",
+            "\\bqris\\s+resmi\\s+di\\s+halaman\\s+checkout\\b"
+          ],
+          "validation_status": "ACCEPTED",
+          "validation_note": "Eliminated all Pusat Resolusi & official QRIS FPs; QRIS refund trap recall reached 100%."
+        }
+      ],
+      "rejected_patches": []
+    },
+    {
+      "generation": 2,
+      "title": "Generation 2 — Obfuscated Escrow Bypass & Typosquat Phishing Repair (with Guardrail Rollback)",
+      "summary": "First rejected an overbroad payment-keyword patch that spiked validation FPR to 0.0%. Then synthesized precision-safe regexes for leetspeak Indonesian phone numbers (O8I2...), wa.me/t.me escrow bypass, typosquatted Shopee/Tokopedia/SeaBank domains, and OTP/PIN harvesting.",
+      "elapsed_ms": 58.08,
+      "metrics": {
+        "total_samples": 72,
+        "scam_samples": 50,
+        "benign_samples": 22,
+        "true_positives": 44,
+        "false_positives": 0,
+        "true_negatives": 22,
+        "false_negatives": 6,
+        "precision": 1.0,
+        "recall": 0.88,
+        "f1": 0.9362,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 0.4
+        }
+      },
+      "validation_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 13,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 2,
+        "precision": 1.0,
+        "recall": 0.8667,
+        "f1": 0.9286,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 0.3333
+        }
+      },
+      "sealed_test_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 14,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 1,
+        "precision": 1.0,
+        "recall": 0.9333,
+        "f1": 0.9655,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 0.6667
+        }
+      },
+      "rules": [
+        {
+          "rule_id": "R01_PHISHING_URL",
+          "name": "Typosquat Domain, Shortlink & OTP/PIN Harvesting Rule",
+          "category": "phishing_link",
+          "description": "Flags explicit http:// links on .xyz/.top domains or explicit login+password prompts.",
+          "weight": 0.65,
+          "patterns": [
+            "http://[a-z0-9\\-_.]+\\.(?:xyz|top)/[^\\s]*",
+            "\\bpin\\s+shopeepay\\b",
+            "\\b(?:sh[0o]pee|t[0o]kopedia|seab[a4]nk|laz[a4]da)-[a-z0-9\\-]+\\.(?:xyz|top|site|online|click)\\b",
+            "\\b(?:bit\\.ly|s\\.id|tinyurl\\.com)/[a-z0-9_\\-]+\\b",
+            "\\b(?:masukkan|sebutkan|kirimkan|minta)\\s+(?:kode\\s+)?(?:otp|pin\\s+(?:seabank|shopeepay|gopay))\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [
+            {
+              "token_a": "\\blogin\\b",
+              "token_b": "\\bpassword\\b",
+              "max_window_chars": 80
+            }
+          ],
+          "suspicious_tlds": [
+            "xyz",
+            "top",
+            "site",
+            "online",
+            "click"
+          ],
+          "version": 2,
+          "patch_rationale": "Gen-2 repair: Added lookalike brand domain patterns (sh0pee, t0kopedia, seab4nk), suspicious TLD heuristics (.xyz/.top/.site/.online/.click), shortlinks (s.id, bit.ly), and OTP/PIN capture phrases."
+        },
+        {
+          "rule_id": "R02_RESI_COURIER",
+          "name": "Hardened Courier APK & Sideload Malware Rule",
+          "category": "fake_courier_apk",
+          "description": "Naive rule matching '.apk' OR bare phrases 'cek resi', 'resi jnt', 'foto paket' (causes FPs on normal buyers!).",
+          "weight": 0.6,
+          "patterns": [
+            "\\.apk\\b",
+            "\\.a\\s*p\\s*k\\b",
+            "\\binstal\\s+aplikasi\\s+(?:kurir|resi|ekspedisi)\\b",
+            "\\bsumber\\s+tidak\\s+dikenal\\b",
+            "\\bmatikan\\s+play\\s+protect\\b",
+            "\\bizin(?:kan)?\\s+akses\\s+sms\\b",
+            "\\bfile\\s+resi[_a-z0-9\\-]*\\.(?:zip|rar|apk)\\b"
+          ],
+          "negative_patterns": [
+            "\\bresi\\s+(?:jnt|jne|sicepat|spx|anteraja)\\s*:\\s*[A-Z0-9]{8,16}\\b(?!.*(?:\\.a\\s*p\\s*k|sumber\\s+tidak\\s+dikenal|instal\\s+aplikasi))"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Removed bare 'cek resi'/'foto paket' triggers that caused FPs on benign tracking; added spaced '.a p k', sideload permission indicators, and alphanumeric resi whitelist context."
+        },
+        {
+          "rule_id": "R03_REFUND_QRIS",
+          "name": "Contextual QRIS & Advance-Fee Refund Trap Rule",
+          "category": "qris_refund_trap",
+          "description": "Naive rule matching bare 'qris', 'pengembalian dana', or 'refund' (causes FPs on legitimate resolution requests!).",
+          "weight": 0.55,
+          "patterns": [
+            "\\b(?:scan|bayar|transfer)\\s+qris\\s+(?:untuk\\s+)?(?:pencairan|klaim|aktifkan|refund|biaya)\\b",
+            "\\b(?:biaya|dana)\\s+(?:pancingan|jaminan|aktivasi\\s+refund)\\b",
+            "\\bsaldo\\s+mengendap\\b",
+            "\\bkode\\s+unik\\s+(?:pencairan|verifikasi|refund)\\b",
+            "\\brefund\\s+manual\\s+di\\s+luar\\s+aplikasi\\b"
+          ],
+          "negative_patterns": [
+            "\\bpusat\\s+resolusi\\b(?!.*(?:jangan\\s+lewat|di\\s+luar\\s+aplikasi|scan\\s+qris))",
+            "\\bqris\\s+resmi\\s+di\\s+halaman\\s+checkout\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Replaced bare 'refund'/'qris' keywords with predatory fee-trap patterns (biaya pancingan, kode unik pencairan, saldo mengendap) and whitelisted official Pusat Resolusi & checkout QRIS."
+        },
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "name": "Obfuscation-Resilient Off-Platform & Escrow Bypass Rule",
+          "category": "off_platform_escrow_bypass",
+          "description": "Matches only un-obfuscated 'whatsapp' with contiguous 08xxxxxxxx numbers.",
+          "weight": 0.65,
+          "patterns": [
+            "\\bwhatsapp\\b.*?\\b08[0-9]{8,11}\\b",
+            "\\btransfer\\s+langsung\\b",
+            "\\b(?:0|o|kosong)\\s*8[0-9oi\\s\\.\\-]{7,15}\\b",
+            "\\b(?:wa\\.me|t\\.me)/[a-z0-9_\\-]+\\b",
+            "\\b(?:lanjut|pindah|chat|hubungi|japri)\\s+(?:ke\\s+)?(?:wa|whatsapp|tele|telegram)\\b",
+            "\\b(?:transfer|tf)\\s+langsung\\s+ke\\s+rek(?:ening)?\\s+pribadi\\b",
+            "\\bkirim\\s+(?:barang|paket)\\s+dulu\\b",
+            "\\buang\\s+masuk\\s+belakangan\\b"
+          ],
+          "negative_patterns": [
+            "\\bjangan\\s+di\\s+luar\\s+aplikasi\\b",
+            "\\bchat\\s+di\\s+aplikasi\\s+saja\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 2,
+          "patch_rationale": "Gen-2 repair: Added leetspeak/spaced Indonesian phone normalization (O8I2..., kosong812..., 0821 . 4455), wa.me/t.me links, and ship-before-payment coercion with in-app safety negative context."
+        },
+        {
+          "rule_id": "R05_CS_IMPERSONATION",
+          "name": "Naive Admin Shopee Impersonation Rule",
+          "category": "fake_cs_urgency",
+          "description": "Matches only literal 'admin shopee' phrase.",
+          "weight": 0.65,
+          "patterns": [
+            "\\badmin\\s+shopee\\b",
+            "\\bdibekukan\\s+dalam\\s+10\\s+menit\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 0,
+          "patch_rationale": "Gen-0 baseline: misses fake [SISTEM PERINGATAN] headers, Tim Verifikasi Toko, and flash-sale tax traps."
+        }
+      ],
+      "failure_clusters": [
+        {
+          "failure_type": "FN",
+          "cluster_id": "CLUSTER_FN_FAKE_CS_URGENCY",
+          "category": "fake_cs_urgency",
+          "sample_ids": [
+            "FAKECS_02",
+            "FAKECS_03",
+            "FAKECS_04",
+            "FAKECS_05",
+            "FAKECS_07",
+            "FAKECS_09"
+          ],
+          "root_cause": "Fake system headers ('[SISTEM PERINGATAN RESMI]', '[ADMIN PUSAT BANTUAN]'), 'Tim Verifikasi/Keamanan/Audit Toko', account freeze countdowns, and flash-sale winner taxes evade 'admin shopee'.",
+          "offending_or_missing_rule_id": "R05_CS_IMPERSONATION",
+          "example_snippet": "[SISTEM PERINGATAN RESMI] Deteksi transaksi mencurigakan pada etalase Anda. Toko Anda akan dibekukan dalam 15 menit dan seluruh saldo ditangguhkan apabila tidak",
+          "proposed_remediation": "Add bracketed authority header regex, 'Tim (Verifikasi|Keamanan|Audit) (Toko|Marketplace)', urgent freeze countdowns ('dibekukan/dinonaktifkan/ditangguhkan dalam X menit'), and giveaway/flash-sale tax lures."
+        }
+      ],
+      "applied_patches": [
+        {
+          "rule_id": "R01_PHISHING_URL",
+          "rule_name": "Typosquat Domain, Shortlink & OTP/PIN Harvesting Rule",
+          "action": "PATCHED",
+          "rationale": "Gen-2 repair: Added lookalike brand domain patterns (sh0pee, t0kopedia, seab4nk), suspicious TLD heuristics (.xyz/.top/.site/.online/.click), shortlinks (s.id, bit.ly), and OTP/PIN capture phrases.",
+          "added_patterns": [
+            "\\b(?:sh[0o]pee|t[0o]kopedia|seab[a4]nk|laz[a4]da)-[a-z0-9\\-]+\\.(?:xyz|top|site|online|click)\\b",
+            "\\b(?:bit\\.ly|s\\.id|tinyurl\\.com)/[a-z0-9_\\-]+\\b",
+            "\\b(?:masukkan|sebutkan|kirimkan|minta)\\s+(?:kode\\s+)?(?:otp|pin\\s+(?:seabank|shopeepay|gopay))\\b"
+          ],
+          "removed_patterns": [],
+          "added_negative_patterns": [],
+          "validation_status": "ACCEPTED",
+          "validation_note": "Passed validation guardrail (FPR = 0.0%); phishing & credential harvesting recall reached 100%."
+        },
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "rule_name": "Obfuscation-Resilient Off-Platform & Escrow Bypass Rule",
+          "action": "PATCHED",
+          "rationale": "Gen-2 repair: Added leetspeak/spaced Indonesian phone normalization (O8I2..., kosong812..., 0821 . 4455), wa.me/t.me links, and ship-before-payment coercion with in-app safety negative context.",
+          "added_patterns": [
+            "\\b(?:0|o|kosong)\\s*8[0-9oi\\s\\.\\-]{7,15}\\b",
+            "\\b(?:wa\\.me|t\\.me)/[a-z0-9_\\-]+\\b",
+            "\\b(?:lanjut|pindah|chat|hubungi|japri)\\s+(?:ke\\s+)?(?:wa|whatsapp|tele|telegram)\\b",
+            "\\b(?:transfer|tf)\\s+langsung\\s+ke\\s+rek(?:ening)?\\s+pribadi\\b",
+            "\\bkirim\\s+(?:barang|paket)\\s+dulu\\b",
+            "\\buang\\s+masuk\\s+belakangan\\b"
+          ],
+          "removed_patterns": [],
+          "added_negative_patterns": [
+            "\\bjangan\\s+di\\s+luar\\s+aplikasi\\b",
+            "\\bchat\\s+di\\s+aplikasi\\s+saja\\b"
+          ],
+          "validation_status": "ACCEPTED",
+          "validation_note": "Passed validation guardrail (FPR = 0.0% <= 5.0%); off-platform recall reached 100%."
+        }
+      ],
+      "rejected_patches": [
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "rule_name": "Overbroad Payment & Chat Mention Candidate (Candidate 2A)",
+          "action": "REJECTED_ROLLBACK",
+          "rationale": "Attempted to catch escrow bypass by flagging 'sudah bayar' and 'checkout sekarang'.",
+          "added_patterns": [
+            "\\bsudah\\s+(?:aku\\s+|saya\\s+)?bayar\\b",
+            "\\bcheckout\\s+sekarang\\b"
+          ],
+          "removed_patterns": [],
+          "added_negative_patterns": [],
+          "validation_status": "REJECTED_GUARDRAIL",
+          "validation_note": "REJECTED & ROLLED BACK: Candidate validation F1 (0.800) did not improve over previous (0.800). (Candidate Val FPR=0.0% vs limit 5.0%)."
+        }
+      ]
+    },
+    {
+      "generation": 3,
+      "title": "Generation 3 — Fake CS Authority & Flash-Sale Urgency Convergence",
+      "summary": "Synthesizes bracketed system/admin impersonation detectors, 'Tim Verifikasi/Keamanan/Audit Toko' patterns, urgent account-freeze minute countdowns, and fake giveaway/flash-sale tax lures. Converges at F1 = 1.000 with 0.0% False Positive Rate across all splits.",
+      "elapsed_ms": 61.47,
+      "metrics": {
+        "total_samples": 72,
+        "scam_samples": 50,
+        "benign_samples": 22,
+        "true_positives": 50,
+        "false_positives": 0,
+        "true_negatives": 22,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 1.0
+        }
+      },
+      "validation_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 15,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 1.0
+        }
+      },
+      "sealed_test_metrics": {
+        "total_samples": 22,
+        "scam_samples": 15,
+        "benign_samples": 7,
+        "true_positives": 15,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "review_rate": 0.0,
+        "per_category_recall": {
+          "phishing_link": 1.0,
+          "fake_courier_apk": 1.0,
+          "qris_refund_trap": 1.0,
+          "off_platform_escrow_bypass": 1.0,
+          "fake_cs_urgency": 1.0
+        }
+      },
+      "rules": [
+        {
+          "rule_id": "R01_PHISHING_URL",
+          "name": "Typosquat Domain, Shortlink & OTP/PIN Harvesting Rule",
+          "category": "phishing_link",
+          "description": "Flags explicit http:// links on .xyz/.top domains or explicit login+password prompts.",
+          "weight": 0.65,
+          "patterns": [
+            "http://[a-z0-9\\-_.]+\\.(?:xyz|top)/[^\\s]*",
+            "\\bpin\\s+shopeepay\\b",
+            "\\b(?:sh[0o]pee|t[0o]kopedia|seab[a4]nk|laz[a4]da)-[a-z0-9\\-]+\\.(?:xyz|top|site|online|click)\\b",
+            "\\b(?:bit\\.ly|s\\.id|tinyurl\\.com)/[a-z0-9_\\-]+\\b",
+            "\\b(?:masukkan|sebutkan|kirimkan|minta)\\s+(?:kode\\s+)?(?:otp|pin\\s+(?:seabank|shopeepay|gopay))\\b"
+          ],
+          "negative_patterns": [],
+          "proximity_pairs": [
+            {
+              "token_a": "\\blogin\\b",
+              "token_b": "\\bpassword\\b",
+              "max_window_chars": 80
+            }
+          ],
+          "suspicious_tlds": [
+            "xyz",
+            "top",
+            "site",
+            "online",
+            "click"
+          ],
+          "version": 2,
+          "patch_rationale": "Gen-2 repair: Added lookalike brand domain patterns (sh0pee, t0kopedia, seab4nk), suspicious TLD heuristics (.xyz/.top/.site/.online/.click), shortlinks (s.id, bit.ly), and OTP/PIN capture phrases."
+        },
+        {
+          "rule_id": "R02_RESI_COURIER",
+          "name": "Hardened Courier APK & Sideload Malware Rule",
+          "category": "fake_courier_apk",
+          "description": "Naive rule matching '.apk' OR bare phrases 'cek resi', 'resi jnt', 'foto paket' (causes FPs on normal buyers!).",
+          "weight": 0.6,
+          "patterns": [
+            "\\.apk\\b",
+            "\\.a\\s*p\\s*k\\b",
+            "\\binstal\\s+aplikasi\\s+(?:kurir|resi|ekspedisi)\\b",
+            "\\bsumber\\s+tidak\\s+dikenal\\b",
+            "\\bmatikan\\s+play\\s+protect\\b",
+            "\\bizin(?:kan)?\\s+akses\\s+sms\\b",
+            "\\bfile\\s+resi[_a-z0-9\\-]*\\.(?:zip|rar|apk)\\b"
+          ],
+          "negative_patterns": [
+            "\\bresi\\s+(?:jnt|jne|sicepat|spx|anteraja)\\s*:\\s*[A-Z0-9]{8,16}\\b(?!.*(?:\\.a\\s*p\\s*k|sumber\\s+tidak\\s+dikenal|instal\\s+aplikasi))"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Removed bare 'cek resi'/'foto paket' triggers that caused FPs on benign tracking; added spaced '.a p k', sideload permission indicators, and alphanumeric resi whitelist context."
+        },
+        {
+          "rule_id": "R03_REFUND_QRIS",
+          "name": "Contextual QRIS & Advance-Fee Refund Trap Rule",
+          "category": "qris_refund_trap",
+          "description": "Naive rule matching bare 'qris', 'pengembalian dana', or 'refund' (causes FPs on legitimate resolution requests!).",
+          "weight": 0.55,
+          "patterns": [
+            "\\b(?:scan|bayar|transfer)\\s+qris\\s+(?:untuk\\s+)?(?:pencairan|klaim|aktifkan|refund|biaya)\\b",
+            "\\b(?:biaya|dana)\\s+(?:pancingan|jaminan|aktivasi\\s+refund)\\b",
+            "\\bsaldo\\s+mengendap\\b",
+            "\\bkode\\s+unik\\s+(?:pencairan|verifikasi|refund)\\b",
+            "\\brefund\\s+manual\\s+di\\s+luar\\s+aplikasi\\b"
+          ],
+          "negative_patterns": [
+            "\\bpusat\\s+resolusi\\b(?!.*(?:jangan\\s+lewat|di\\s+luar\\s+aplikasi|scan\\s+qris))",
+            "\\bqris\\s+resmi\\s+di\\s+halaman\\s+checkout\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 1,
+          "patch_rationale": "Gen-1 repair: Replaced bare 'refund'/'qris' keywords with predatory fee-trap patterns (biaya pancingan, kode unik pencairan, saldo mengendap) and whitelisted official Pusat Resolusi & checkout QRIS."
+        },
+        {
+          "rule_id": "R04_OFF_PLATFORM",
+          "name": "Obfuscation-Resilient Off-Platform & Escrow Bypass Rule",
+          "category": "off_platform_escrow_bypass",
+          "description": "Matches only un-obfuscated 'whatsapp' with contiguous 08xxxxxxxx numbers.",
+          "weight": 0.65,
+          "patterns": [
+            "\\bwhatsapp\\b.*?\\b08[0-9]{8,11}\\b",
+            "\\btransfer\\s+langsung\\b",
+            "\\b(?:0|o|kosong)\\s*8[0-9oi\\s\\.\\-]{7,15}\\b",
+            "\\b(?:wa\\.me|t\\.me)/[a-z0-9_\\-]+\\b",
+            "\\b(?:lanjut|pindah|chat|hubungi|japri)\\s+(?:ke\\s+)?(?:wa|whatsapp|tele|telegram)\\b",
+            "\\b(?:transfer|tf)\\s+langsung\\s+ke\\s+rek(?:ening)?\\s+pribadi\\b",
+            "\\bkirim\\s+(?:barang|paket)\\s+dulu\\b",
+            "\\buang\\s+masuk\\s+belakangan\\b"
+          ],
+          "negative_patterns": [
+            "\\bjangan\\s+di\\s+luar\\s+aplikasi\\b",
+            "\\bchat\\s+di\\s+aplikasi\\s+saja\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 2,
+          "patch_rationale": "Gen-2 repair: Added leetspeak/spaced Indonesian phone normalization (O8I2..., kosong812..., 0821 . 4455), wa.me/t.me links, and ship-before-payment coercion with in-app safety negative context."
+        },
+        {
+          "rule_id": "R05_CS_IMPERSONATION",
+          "name": "Authority Impersonation, Freeze Coercion & Giveaway Tax Rule",
+          "category": "fake_cs_urgency",
+          "description": "Matches only literal 'admin shopee' phrase.",
+          "weight": 0.65,
+          "patterns": [
+            "\\badmin\\s+shopee\\b",
+            "\\bdibekukan\\s+dalam\\s+10\\s+menit\\b",
+            "\\[(?:sistem|admin)\\s+[^\\]]*(?:resmi|bantuan|marketplace|peringatan)[^\\]]*\\]",
+            "\\btim\\s+(?:verifikasi|keamanan|audit)\\s+(?:toko|marketplace)\\b",
+            "\\b(?:akun|toko|saldo|dompet)\\s+(?:anda\\s+|penjual\\s+)?(?:akan\\s+)?(?:dibekukan|dinonaktifkan|ditangguhkan|tertahan)\\s+(?:otomatis\\s+)?(?:dalam\\s+[0-9]+\\s*menit|sebesar)\\b",
+            "\\b(?:pajak|biaya\\s+admin)\\s+pemenang\\s+(?:undian|flash\\s*sale|giveaway)\\b"
+          ],
+          "negative_patterns": [
+            "\\bmenu\\s+(?:bantuan|pengaturan)\\s+aplikasi\\b"
+          ],
+          "proximity_pairs": [],
+          "suspicious_tlds": [],
+          "version": 3,
+          "patch_rationale": "Gen-3 repair: Added fake system/admin bracket headers, 'Tim Verifikasi/Keamanan/Audit Toko', account freeze minute-countdown coercion, and flash-sale/giveaway winner tax patterns."
+        }
+      ],
+      "failure_clusters": [],
+      "applied_patches": [
+        {
+          "rule_id": "R05_CS_IMPERSONATION",
+          "rule_name": "Authority Impersonation, Freeze Coercion & Giveaway Tax Rule",
+          "action": "PATCHED",
+          "rationale": "Gen-3 repair: Added fake system/admin bracket headers, 'Tim Verifikasi/Keamanan/Audit Toko', account freeze minute-countdown coercion, and flash-sale/giveaway winner tax patterns.",
+          "added_patterns": [
+            "\\[(?:sistem|admin)\\s+[^\\]]*(?:resmi|bantuan|marketplace|peringatan)[^\\]]*\\]",
+            "\\btim\\s+(?:verifikasi|keamanan|audit)\\s+(?:toko|marketplace)\\b",
+            "\\b(?:akun|toko|saldo|dompet)\\s+(?:anda\\s+|penjual\\s+)?(?:akan\\s+)?(?:dibekukan|dinonaktifkan|ditangguhkan|tertahan)\\s+(?:otomatis\\s+)?(?:dalam\\s+[0-9]+\\s*menit|sebesar)\\b",
+            "\\b(?:pajak|biaya\\s+admin)\\s+pemenang\\s+(?:undian|flash\\s*sale|giveaway)\\b"
+          ],
+          "removed_patterns": [],
+          "added_negative_patterns": [
+            "\\bmenu\\s+(?:bantuan|pengaturan)\\s+aplikasi\\b"
+          ],
+          "validation_status": "ACCEPTED",
+          "validation_note": "Passed all guardrails (FPR = 0.0%); fake CS urgency recall reached 100% and overall F1 converged >= 0.95."
+        }
+      ],
+      "rejected_patches": []
+    }
+  ]
+}

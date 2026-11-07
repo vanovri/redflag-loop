@@ -478,6 +478,18 @@ def _apply_generation_3_patches(
     return new_rules, diffs
 
 
+def _record_patch_decision(
+    diffs: list[PatchDiff], accepted: bool, note: str
+) -> tuple[list[PatchDiff], list[PatchDiff]]:
+    """Keep exported patch decisions consistent with the selected active rules."""
+    for diff in diffs:
+        diff.validation_status = "ACCEPTED" if accepted else "REJECTED_GUARDRAIL"
+        diff.validation_note = note
+        if not accepted:
+            diff.action = "REJECTED_ROLLBACK"
+    return (diffs, []) if accepted else ([], diffs)
+
+
 class AutonomousRedFlagLoop:
     """Orchestrates the autonomous Write -> Run -> Evaluate -> Repair rule evolution loop."""
 
@@ -531,13 +543,12 @@ class AutonomousRedFlagLoop:
         # ---------------------------------------------------------------------
         # GENERATION 0: Naive Baseline Evaluation & Failure Clustering
         # ---------------------------------------------------------------------
-        non_sealed_samples = [s for s in self.samples if s.split != "sealed_test"]
         t0 = time.perf_counter()
         engine0 = RuleEngine(current_rules)
         full_metrics0, full_evals0 = engine0.evaluate_corpus(self.samples)
         val_metrics0, _ = engine0.evaluate_corpus(self.val_samples)
         test_metrics0, _ = engine0.evaluate_corpus(self.sealed_test_samples)
-        clusters0 = cluster_failures(non_sealed_samples, full_evals0)
+        clusters0 = cluster_failures(self.dev_samples, full_evals0)
         elapsed0 = (time.perf_counter() - t0) * 1000.0
 
         generations.append(
@@ -545,9 +556,9 @@ class AutonomousRedFlagLoop:
                 generation=0,
                 title="Generation 0 — Naive Baseline Rules",
                 summary=(
-                    "Initial keyword/regex baseline suffers from high False Positives on legitimate courier "
-                    "tracking ('cek resi JNT', 'foto paket') and official Pusat Resolusi refunds, while missing "
-                    "obfuscated Indonesian phone numbers, typosquatted domains, and fake CS headers."
+                    f"Baseline rules evaluated. Active F1={full_metrics0.f1:.3f}. "
+                    f"Active FPR={full_metrics0.false_positive_rate:.1%}. "
+                    "Failure examples use the development split only."
                 ),
                 elapsed_ms=elapsed0,
                 metrics=full_metrics0,
@@ -569,7 +580,8 @@ class AutonomousRedFlagLoop:
         cand1_rules, cand1_diffs = _apply_generation_1_patches(current_rules)
         engine1 = RuleEngine(cand1_rules)
         val_metrics1, _ = engine1.evaluate_corpus(self.val_samples)
-        accepted1, _ = self._validate_candidate(prev_val_metrics, val_metrics1)
+        accepted1, note1 = self._validate_candidate(prev_val_metrics, val_metrics1)
+        applied1, rejected1 = _record_patch_decision(cand1_diffs, accepted1, note1)
         if accepted1:
             current_rules = cand1_rules
             prev_val_metrics = val_metrics1
@@ -578,7 +590,7 @@ class AutonomousRedFlagLoop:
         active_val_metrics1 = prev_val_metrics
         full_metrics1, full_evals1 = active_engine1.evaluate_corpus(self.samples)
         test_metrics1, _ = active_engine1.evaluate_corpus(self.sealed_test_samples)
-        clusters1 = cluster_failures(non_sealed_samples, full_evals1)
+        clusters1 = cluster_failures(self.dev_samples, full_evals1)
         elapsed1 = (time.perf_counter() - t1) * 1000.0
 
         generations.append(
@@ -586,9 +598,9 @@ class AutonomousRedFlagLoop:
                 generation=1,
                 title="Generation 1 — Courier/Refund FP Suppression & APK/QRIS Hardening",
                 summary=(
-                    "Autonomous repair removes bare 'cek resi'/'foto paket'/'refund' triggers, adds negative "
-                    "whitelist context for alphanumeric tracking numbers and official Pusat Resolusi flows, "
-                    "and synthesizes sideload APK & advance-fee QRIS patterns. False Positives drop to 0!"
+                    f"Candidate accepted. Active validation F1={active_val_metrics1.f1:.3f}. "
+                    f"Active validation FPR={active_val_metrics1.false_positive_rate:.1%}."
+                    if accepted1 else f"Candidate rejected. {note1} Active rules remain unchanged."
                 ),
                 elapsed_ms=elapsed1,
                 metrics=full_metrics1,
@@ -596,8 +608,8 @@ class AutonomousRedFlagLoop:
                 sealed_test_metrics=test_metrics1,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters1,
-                applied_patches=cand1_diffs,
-                rejected_patches=[],
+                applied_patches=applied1,
+                rejected_patches=rejected1,
             )
         )
 
@@ -623,7 +635,9 @@ class AutonomousRedFlagLoop:
         cand2_rules, cand2_diffs = _apply_generation_2_patches(current_rules)
         engine2 = RuleEngine(cand2_rules)
         val_metrics2, _ = engine2.evaluate_corpus(self.val_samples)
-        accepted2, _ = self._validate_candidate(prev_val_metrics, val_metrics2)
+        accepted2, note2 = self._validate_candidate(prev_val_metrics, val_metrics2)
+        applied2, rejected2 = _record_patch_decision(cand2_diffs, accepted2, note2)
+        rejected_gen2.extend(rejected2)
         if accepted2:
             current_rules = cand2_rules
             prev_val_metrics = val_metrics2
@@ -632,7 +646,7 @@ class AutonomousRedFlagLoop:
         active_val_metrics2 = prev_val_metrics
         full_metrics2, full_evals2 = active_engine2.evaluate_corpus(self.samples)
         test_metrics2, _ = active_engine2.evaluate_corpus(self.sealed_test_samples)
-        clusters2 = cluster_failures(non_sealed_samples, full_evals2)
+        clusters2 = cluster_failures(self.dev_samples, full_evals2)
         elapsed2 = (time.perf_counter() - t2) * 1000.0
 
         generations.append(
@@ -640,10 +654,9 @@ class AutonomousRedFlagLoop:
                 generation=2,
                 title="Generation 2 — Obfuscated Escrow Bypass & Typosquat Phishing Repair (with Guardrail Rollback)",
                 summary=(
-                    "First rejected an overbroad payment-keyword patch that spiked validation FPR to "
-                    f"{bad_val_metrics.false_positive_rate:.1%}. Then synthesized precision-safe regexes for "
-                    "leetspeak Indonesian phone numbers (O8I2...), wa.me/t.me escrow bypass, typosquatted "
-                    "Shopee/Tokopedia/SeaBank domains, and OTP/PIN harvesting."
+                    f"Candidate accepted. Active validation F1={active_val_metrics2.f1:.3f}. "
+                    f"Active validation FPR={active_val_metrics2.false_positive_rate:.1%}."
+                    if accepted2 else f"Candidate rejected. {note2} Active rules remain unchanged."
                 ),
                 elapsed_ms=elapsed2,
                 metrics=full_metrics2,
@@ -651,7 +664,7 @@ class AutonomousRedFlagLoop:
                 sealed_test_metrics=test_metrics2,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters2,
-                applied_patches=cand2_diffs,
+                applied_patches=applied2,
                 rejected_patches=rejected_gen2,
             )
         )
@@ -663,7 +676,8 @@ class AutonomousRedFlagLoop:
         cand3_rules, cand3_diffs = _apply_generation_3_patches(current_rules)
         engine3 = RuleEngine(cand3_rules)
         val_metrics3, _ = engine3.evaluate_corpus(self.val_samples)
-        accepted3, _ = self._validate_candidate(prev_val_metrics, val_metrics3)
+        accepted3, note3 = self._validate_candidate(prev_val_metrics, val_metrics3)
+        applied3, rejected3 = _record_patch_decision(cand3_diffs, accepted3, note3)
         if accepted3:
             current_rules = cand3_rules
             prev_val_metrics = val_metrics3
@@ -672,17 +686,17 @@ class AutonomousRedFlagLoop:
         active_val_metrics3 = prev_val_metrics
         full_metrics3, full_evals3 = active_engine3.evaluate_corpus(self.samples)
         test_metrics3, _ = active_engine3.evaluate_corpus(self.sealed_test_samples)
-        clusters3 = cluster_failures(non_sealed_samples, full_evals3)
+        clusters3 = cluster_failures(self.dev_samples, full_evals3)
         elapsed3 = (time.perf_counter() - t3) * 1000.0
 
         generations.append(
             GenerationSnapshot(
                 generation=3,
-                title="Generation 3 — Fake CS Authority & Flash-Sale Urgency Convergence",
+                title="Generation 3: Fake CS Authority and Urgency Candidate",
                 summary=(
-                    "Synthesizes bracketed system/admin impersonation detectors, 'Tim Verifikasi/Keamanan/Audit Toko' "
-                    "patterns, urgent account-freeze minute countdowns, and fake giveaway/flash-sale tax lures. "
-                    "Converges at F1 = 1.000 with 0.0% False Positive Rate across all splits."
+                    f"Candidate accepted. Active validation F1={active_val_metrics3.f1:.3f}. "
+                    f"Active validation FPR={active_val_metrics3.false_positive_rate:.1%}."
+                    if accepted3 else f"Candidate rejected. {note3} Active rules remain unchanged."
                 ),
                 elapsed_ms=elapsed3,
                 metrics=full_metrics3,
@@ -690,8 +704,8 @@ class AutonomousRedFlagLoop:
                 sealed_test_metrics=test_metrics3,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters3,
-                applied_patches=cand3_diffs,
-                rejected_patches=[],
+                applied_patches=applied3,
+                rejected_patches=rejected3,
             )
         )
 

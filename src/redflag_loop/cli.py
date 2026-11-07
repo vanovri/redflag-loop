@@ -415,9 +415,9 @@ def build_dashboard_html(
         </div>
       </div>
       <div class="header-tags">
-        <span class="pill">Direction 1: Autonomous &amp; Adaptive AI</span>
-        <span class="pill">Benchmark: ID-ScamChat-72 (6 Categories)</span>
-        <span class="pill success" id="header-convergence-pill">Converged: Gen 3 (F1 = 1.000)</span>
+        <span class="pill">Deterministic rule evolution demo</span>
+        <span class="pill">Report corpus: {report.total_corpus_size} conversations</span>
+        <span class="pill" id="header-convergence-pill">{'Target reached' if report.converged else 'Target not reached'}: F1 = {report.final_f1:.3f}</span>
       </div>
     </div>
   </header>
@@ -431,34 +431,34 @@ def build_dashboard_html(
           <span style="color: var(--green)">{report.final_f1:.3f}</span>
           <span style="font-size: 0.95rem; color: #4ade80;">+{report.f1_improvement:.3f} vs Gen 0 ({report.initial_f1:.3f})</span>
         </div>
-        <div class="kpi-sub">Target threshold &ge; {report.target_f1:.2f} achieved in {report.generations_run - 1} autonomous repair rounds</div>
+        <div class="kpi-sub">Target threshold &ge; {report.target_f1:.2f}. {'Target reached' if report.converged else 'Target not reached'} after {report.generations_run - 1} candidate rounds</div>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-label">False Positive Rate (Hard Negatives)</div>
         <div class="kpi-value">
           <span style="color: var(--accent)">{report.final_fpr * 100:.1f}%</span>
-          <span style="font-size: 0.95rem; color: var(--text-muted);">down from {report.initial_fpr * 100:.1f}%</span>
+          <span style="font-size: 0.95rem; color: var(--text-muted);">baseline {report.initial_fpr * 100:.1f}%</span>
         </div>
-        <div class="kpi-sub">0 false alarms on legitimate J&amp;T/JNE resi, Pusat Resolusi &amp; official QRIS chats</div>
+        <div class="kpi-sub">{report.generations[-1].metrics.false_positives} false positives on the supplied corpus</div>
       </div>
 
       <div class="kpi-card">
-        <div class="kpi-label">Sealed Holdout Test Suite F1</div>
+        <div class="kpi-label">Labelled sealed_test Split F1</div>
         <div class="kpi-value">
           <span style="color: #c084fc">{report.generations[-1].sealed_test_metrics.f1:.3f}</span>
-          <span style="font-size: 0.95rem; color: var(--text-muted);">100% Precision &amp; Recall</span>
+          <span style="font-size: 0.95rem; color: var(--text-muted);">Precision {report.generations[-1].sealed_test_metrics.precision:.3f}, recall {report.generations[-1].sealed_test_metrics.recall:.3f}</span>
         </div>
-        <div class="kpi-sub">Evaluated on untouched sealed_test split after candidate freeze</div>
+        <div class="kpi-sub">Scored each generation for reporting; not used for patch selection</div>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-label">Safety Guardrail Enforcement</div>
         <div class="kpi-value">
-          <span style="color: var(--amber)">1 Rollback</span>
+          <span style="color: var(--amber)">{sum(len(g.rejected_patches) for g in report.generations)} rejected patches</span>
           <span style="font-size: 0.9rem; color: var(--text-muted);">Max FPR &le; {report.max_fpr_guardrail * 100:.1f}%</span>
         </div>
-        <div class="kpi-sub">Rejected overbroad Candidate 2A automatically before activating Candidate 2B</div>
+        <div class="kpi-sub">Candidate decisions use validation F1 and false-positive limits</div>
       </div>
     </section>
 
@@ -562,11 +562,12 @@ def build_dashboard_html(
     let selectedDiffGenIndex = 2;
 
     function escapeHtml(str) {{
-      return str
+      return String(str ?? '')
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }}
 
     function renderProgressionChart() {{
@@ -641,14 +642,14 @@ def build_dashboard_html(
       document.getElementById("gen-summary-text").textContent = gen.summary;
       const container = document.getElementById("clusters-container");
       if (gen.failure_clusters.length === 0) {{
-        container.innerHTML = `<div class="cluster-item"><span class="badge badge-ok">ZERO FAILURES</span> All 72 Indonesian marketplace conversations (50 scam + 22 benign &amp; hard-negative courier/refund chats) classified with 100% F1 and 0.0% FPR.</div>`;
+        container.innerHTML = `<div class="cluster-item"><span class="badge badge-ok">NO DEVELOPMENT FAILURES</span> Other split metrics are reported separately.</div>`;
         return;
       }}
       container.innerHTML = gen.failure_clusters.map(c => `
         <div class="cluster-item">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-            <span class="badge ${{c.failure_type === 'FP' ? 'badge-fp' : 'badge-fn'}}">${{c.failure_type}} CLUSTER &bull; ${{c.offending_or_missing_rule_id}}</span>
-            <span style="font-family:var(--mono); font-size:0.74rem; color:var(--text-muted);">${{c.sample_ids.length}} samples (${{c.sample_ids.slice(0, 3).join(', ')}}${{c.sample_ids.length > 3 ? '...' : ''}})</span>
+            <span class="badge ${{c.failure_type === 'FP' ? 'badge-fp' : 'badge-fn'}}">${{escapeHtml(c.failure_type)}} CLUSTER &bull; ${{escapeHtml(c.offending_or_missing_rule_id)}}</span>
+            <span style="font-family:var(--mono); font-size:0.74rem; color:var(--text-muted);">${{c.sample_ids.length}} samples (${{escapeHtml(c.sample_ids.slice(0, 3).join(', '))}}${{c.sample_ids.length > 3 ? '...' : ''}})</span>
           </div>
           <div style="font-weight:600; margin-bottom:0.25rem;">${{escapeHtml(c.root_cause)}}</div>
           <div style="color:var(--text-muted); font-size:0.78rem; margin-bottom:0.3rem;"><em>Example:</em> "${{escapeHtml(c.example_snippet)}}..."</div>
@@ -800,7 +801,7 @@ def build_dashboard_html(
       const featured = featuredIds.map(id => SAMPLES.find(s => s.sample_id === id)).filter(Boolean);
       sel.innerHTML = featured.map((s, idx) => {{
         const tag = s.is_scam ? "[SCAM]" : "[LEGIT HARD-NEGATIVE]";
-        return `<option value="${{s.sample_id}}" ${{idx === 0 ? 'selected' : ''}}>${{tag}} ${{s.sample_id}} — ${{s.category_label}} (${{s.notes}})</option>`;
+        return `<option value="${{escapeHtml(s.sample_id)}}" ${{idx === 0 ? 'selected' : ''}}>${{tag}} ${{escapeHtml(s.sample_id)}} - ${{escapeHtml(s.category_label)}} (${{escapeHtml(s.notes)}})</option>`;
       }}).join("");
       loadPresetSample();
     }}
@@ -860,7 +861,7 @@ def build_dashboard_html(
         summaryHtml += `<div style="color:#4ade80; margin-bottom:0.35rem;">&#x2714; No scam rules triggered (Safe Marketplace Conversation).</div>`;
       }}
       if (res.suppressed.length > 0) {{
-        summaryHtml += `<div style="color:#fde68a;">&#x1F6E1; <strong>Whitelist Context Suppressed False Positive:</strong> ${{res.suppressed.join(", ")}}</div>`;
+        summaryHtml += `<div style="color:#fde68a;">&#x1F6E1; <strong>Whitelist Context Suppressed Rule:</strong> ${{escapeHtml(res.suppressed.join(", "))}}</div>`;
       }}
       document.getElementById("sandbox-rules-summary").innerHTML = summaryHtml;
     }}

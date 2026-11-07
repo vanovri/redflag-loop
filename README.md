@@ -1,14 +1,21 @@
-# RedFlag Loop — Autonomous Indonesian Marketplace Scam Rule Evolution
+# RedFlag Loop: Indonesian Marketplace Rule Evolution Demo
 
 **Sea × OpenAI Codex Hackathon — Direction 1: Autonomous & Adaptive AI**
 
-**RedFlag Loop** is an autonomous **Write → Run → Evaluate → Repair** rule-synthesis and verification engine for Indonesian e-commerce/marketplace trust & safety analysts. When new text-based chat scams (obfuscated WhatsApp escrow bypass, `.apk` courier malware, QRIS advance-fee refund traps, typosquatted phishing links, or fake customer-service freeze coercion) evade baseline filters, rushed manual rule changes often trigger unacceptable false positives on legitimate buyer/seller conversations (`cek resi JNT`, `foto paket`, `Pusat Resolusi`, or official `QRIS` checkout inquiries).
+**RedFlag Loop** executes three preauthored rule-repair stages and checks each candidate against validation guardrails. It demonstrates deterministic evaluation, rollback and evidence spans using an included Indonesian marketplace chat fixture. It does not generate new repair programs with an AI model or establish deployed scam-detection accuracy.
 
 RedFlag Loop closes that loop autonomously:
-1. **Run & Evaluate** active deterministic rules against a labeled Indonesian marketplace chat benchmark (`dev`, `val`, and untouched `sealed_test` splits).
-2. **Cluster Failures** into False Positive (`FP`) and False Negative (`FN`) root-cause clusters per rule and scam family.
-3. **Synthesize Targeted Rule Patches** (adding contextual negative/whitelist patterns to suppress FPs, and obfuscation-resilient regex/proximity/domain heuristics to capture FNs).
+1. **Run & Evaluate** active deterministic rules against the included `dev`, `val`, and labelled `sealed_test` splits.
+2. **Cluster Development Failures** into False Positive (`FP`) and False Negative (`FN`) groups per rule and scam family. Validation and sealed-test examples stay out of these groups.
+3. **Apply Preauthored Candidate Patches** with contextual negative patterns, regex, proximity and domain heuristics.
 4. **Enforce Safety Guardrails**: Every candidate patch is scored on the validation split before activation (`False Positive Rate <= 5.0%`, `no FPR increase > 2.0 percentage points`, and strict F1 improvement). Over-broad candidates are automatically **rejected and rolled back**.
+
+The split labelled `sealed_test` is scored at each generation for reporting. It
+does not select patches, but this is not an untouched, once-only final holdout.
+The following metrics describe the included fixture and fixed repair stages.
+Rejected candidate diffs appear only under `rejected_patches`; applied diffs and
+summaries describe the active rules. Dashboard metadata is escaped before it
+enters HTML, including corpus notes, labels and failure sample identifiers.
 
 ---
 

@@ -6,6 +6,18 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 
+def _parse_strict_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        low = value.strip().lower()
+        if low == "true":
+            return True
+        if low == "false":
+            return False
+    raise ValueError(f"Expected strict boolean for is_scam, got {value!r}")
+
+
 @dataclass(slots=True)
 class ChatTurn:
     """Single message turn inside a marketplace conversation."""
@@ -69,7 +81,7 @@ class ChatSample:
             sample_id=data["sample_id"],
             category=data["category"],
             category_label=data.get("category_label", data["category"]),
-            is_scam=bool(data["is_scam"]),
+            is_scam=_parse_strict_bool(data["is_scam"]),
             split=data.get("split", "dev"),
             difficulty=data.get("difficulty", "standard"),
             turns=turns,

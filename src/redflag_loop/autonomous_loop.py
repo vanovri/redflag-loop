@@ -531,12 +531,13 @@ class AutonomousRedFlagLoop:
         # ---------------------------------------------------------------------
         # GENERATION 0: Naive Baseline Evaluation & Failure Clustering
         # ---------------------------------------------------------------------
+        non_sealed_samples = [s for s in self.samples if s.split != "sealed_test"]
         t0 = time.perf_counter()
         engine0 = RuleEngine(current_rules)
         full_metrics0, full_evals0 = engine0.evaluate_corpus(self.samples)
         val_metrics0, _ = engine0.evaluate_corpus(self.val_samples)
         test_metrics0, _ = engine0.evaluate_corpus(self.sealed_test_samples)
-        clusters0 = cluster_failures(self.samples, full_evals0)
+        clusters0 = cluster_failures(non_sealed_samples, full_evals0)
         elapsed0 = (time.perf_counter() - t0) * 1000.0
 
         generations.append(
@@ -573,9 +574,11 @@ class AutonomousRedFlagLoop:
             current_rules = cand1_rules
             prev_val_metrics = val_metrics1
 
-        full_metrics1, full_evals1 = engine1.evaluate_corpus(self.samples)
-        test_metrics1, _ = engine1.evaluate_corpus(self.sealed_test_samples)
-        clusters1 = cluster_failures(self.samples, full_evals1)
+        active_engine1 = engine1 if accepted1 else RuleEngine(current_rules)
+        active_val_metrics1 = prev_val_metrics
+        full_metrics1, full_evals1 = active_engine1.evaluate_corpus(self.samples)
+        test_metrics1, _ = active_engine1.evaluate_corpus(self.sealed_test_samples)
+        clusters1 = cluster_failures(non_sealed_samples, full_evals1)
         elapsed1 = (time.perf_counter() - t1) * 1000.0
 
         generations.append(
@@ -589,7 +592,7 @@ class AutonomousRedFlagLoop:
                 ),
                 elapsed_ms=elapsed1,
                 metrics=full_metrics1,
-                validation_metrics=val_metrics1,
+                validation_metrics=active_val_metrics1,
                 sealed_test_metrics=test_metrics1,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters1,
@@ -625,9 +628,11 @@ class AutonomousRedFlagLoop:
             current_rules = cand2_rules
             prev_val_metrics = val_metrics2
 
-        full_metrics2, full_evals2 = engine2.evaluate_corpus(self.samples)
-        test_metrics2, _ = engine2.evaluate_corpus(self.sealed_test_samples)
-        clusters2 = cluster_failures(self.samples, full_evals2)
+        active_engine2 = engine2 if accepted2 else RuleEngine(current_rules)
+        active_val_metrics2 = prev_val_metrics
+        full_metrics2, full_evals2 = active_engine2.evaluate_corpus(self.samples)
+        test_metrics2, _ = active_engine2.evaluate_corpus(self.sealed_test_samples)
+        clusters2 = cluster_failures(non_sealed_samples, full_evals2)
         elapsed2 = (time.perf_counter() - t2) * 1000.0
 
         generations.append(
@@ -642,7 +647,7 @@ class AutonomousRedFlagLoop:
                 ),
                 elapsed_ms=elapsed2,
                 metrics=full_metrics2,
-                validation_metrics=val_metrics2,
+                validation_metrics=active_val_metrics2,
                 sealed_test_metrics=test_metrics2,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters2,
@@ -663,9 +668,11 @@ class AutonomousRedFlagLoop:
             current_rules = cand3_rules
             prev_val_metrics = val_metrics3
 
-        full_metrics3, full_evals3 = engine3.evaluate_corpus(self.samples)
-        test_metrics3, _ = engine3.evaluate_corpus(self.sealed_test_samples)
-        clusters3 = cluster_failures(self.samples, full_evals3)
+        active_engine3 = engine3 if accepted3 else RuleEngine(current_rules)
+        active_val_metrics3 = prev_val_metrics
+        full_metrics3, full_evals3 = active_engine3.evaluate_corpus(self.samples)
+        test_metrics3, _ = active_engine3.evaluate_corpus(self.sealed_test_samples)
+        clusters3 = cluster_failures(non_sealed_samples, full_evals3)
         elapsed3 = (time.perf_counter() - t3) * 1000.0
 
         generations.append(
@@ -679,7 +686,7 @@ class AutonomousRedFlagLoop:
                 ),
                 elapsed_ms=elapsed3,
                 metrics=full_metrics3,
-                validation_metrics=val_metrics3,
+                validation_metrics=active_val_metrics3,
                 sealed_test_metrics=test_metrics3,
                 rules=copy.deepcopy(current_rules),
                 failure_clusters=clusters3,

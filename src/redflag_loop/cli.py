@@ -23,8 +23,16 @@ def build_dashboard_html(
     report_dict = report.to_dict()
     samples_list: list[dict[str, Any]] = [s.to_dict() for s in samples]
 
-    report_json = json.dumps(report_dict, ensure_ascii=False)
-    samples_json = json.dumps(samples_list, ensure_ascii=False)
+    def _safe_script_json(obj: Any) -> str:
+        return (
+            json.dumps(obj, ensure_ascii=False)
+            .replace("&", "\\u0026")
+            .replace("<", "\\u003c")
+            .replace(">", "\\u003e")
+        )
+
+    report_json = _safe_script_json(report_dict)
+    samples_json = _safe_script_json(samples_list)
 
     html = f"""<!DOCTYPE html>
 <html lang="en" class="dark">

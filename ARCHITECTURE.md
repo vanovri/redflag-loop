@@ -62,7 +62,7 @@ src/redflag_loop/cli.py contains the local CLI and the generated HTML applicatio
 ## Local verification and current limits
 
 ```powershell
-Set-Location C:\Users\ardhy\Projects\redflag-loop
+Set-Location .
 C:\Python314\python.exe -m pytest -q
 ```
 
